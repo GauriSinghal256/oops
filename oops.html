@@ -133,6 +133,85 @@
     z-index: 1;
   }
 
+  .mobile-index-btn {
+    display: none;
+    position: fixed;
+    right: 16px;
+    bottom: 18px;
+    z-index: 260;
+    background: linear-gradient(135deg, rgba(124,106,255,0.95), rgba(255,106,106,0.9));
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  .mobile-index-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 240;
+    background: transparent;
+  }
+
+  .mobile-index-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 250;
+    max-height: 72vh;
+    overflow-y: auto;
+    background: rgba(17, 17, 24, 0.98);
+    border-top: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    padding: 18px 0 24px;
+    transform: translateY(105%);
+    transition: transform 0.24s ease;
+  }
+
+  .mobile-index-panel.open { transform: translateY(0); }
+
+  .mobile-index-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px 14px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 10px;
+  }
+
+  .mobile-index-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .mobile-index-close {
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+  }
+
+  .mobile-index-links .nav-section-label { padding-left: 16px; }
+  .mobile-index-links .nav-item { padding-left: 16px; }
+
   /* ───── HERO ───── */
   .hero {
     padding: 80px 60px 60px;
@@ -507,6 +586,8 @@
     .sidebar { display: none; }
     .main { margin-left: 0; }
     .hero, .content { padding: 40px 24px; }
+    .mobile-index-btn,
+    .mobile-index-backdrop { display: block; }
   }
 </style>
 </head>
@@ -551,6 +632,17 @@
   <a href="#records-sealed" class="nav-item"><span class="dot"></span>Records &amp; Sealed Classes</a>
   <a href="#interview" class="nav-item"><span class="dot"></span>🎯 Interview Q&amp;A</a>
 </nav>
+
+<button class="mobile-index-btn" id="mobileIndexOpen" type="button">Index</button>
+
+<div class="mobile-index-backdrop" id="mobileIndexBackdrop" hidden></div>
+<aside class="mobile-index-panel" id="mobileIndexPanel" aria-hidden="true">
+  <div class="mobile-index-head">
+    <div class="mobile-index-title">Jump to Topic</div>
+    <button class="mobile-index-close" id="mobileIndexClose" type="button">Close</button>
+  </div>
+  <div class="mobile-index-links" id="mobileIndexLinks"></div>
+</aside>
 
 <!-- ═══════════════ MAIN ═══════════════ -->
 <div class="main">
@@ -2000,6 +2092,33 @@ Enables exhaustive pattern matching switch — no default needed
 // Highlight active nav item on scroll
 const sections = document.querySelectorAll('.section[id]');
 const navItems = document.querySelectorAll('.nav-item');
+const mobilePanel = document.getElementById('mobileIndexPanel');
+const mobileBackdrop = document.getElementById('mobileIndexBackdrop');
+const mobileOpen = document.getElementById('mobileIndexOpen');
+const mobileClose = document.getElementById('mobileIndexClose');
+const mobileLinksWrap = document.getElementById('mobileIndexLinks');
+
+if (mobileLinksWrap) {
+  mobileLinksWrap.innerHTML = document.querySelector('.sidebar').innerHTML;
+}
+
+const setMobileIndexOpen = (isOpen) => {
+  if (!mobilePanel || !mobileBackdrop) return;
+  mobilePanel.classList.toggle('open', isOpen);
+  mobilePanel.setAttribute('aria-hidden', String(!isOpen));
+  mobileBackdrop.hidden = !isOpen;
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+};
+
+if (mobileOpen && mobileClose && mobileBackdrop) {
+  mobileOpen.addEventListener('click', () => setMobileIndexOpen(true));
+  mobileClose.addEventListener('click', () => setMobileIndexOpen(false));
+  mobileBackdrop.addEventListener('click', () => setMobileIndexOpen(false));
+
+  document.querySelectorAll('#mobileIndexLinks .nav-item').forEach(link => {
+    link.addEventListener('click', () => setMobileIndexOpen(false));
+  });
+}
 
 const obs = new IntersectionObserver((entries) => {
   entries.forEach(e => {
