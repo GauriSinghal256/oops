@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java OOPs — FAANG Master Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #16161f;
+    --border: #22222e;
+    --accent: #7c6aff;
+    --accent2: #ff6a6a;
+    --accent3: #6affb0;
+    --accent4: #ffd06a;
+    --text: #e8e8f0;
+    --muted: #8888aa;
+    --code-bg: #0d0d15;
+    --glow: rgba(124,106,255,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ───── NOISE OVERLAY ───── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ───── SIDEBAR NAV ───── */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    padding: 24px 0 40px;
+  }
+
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .sidebar-logo {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-logo .brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .sidebar-logo .title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.2;
+    margin-top: 4px;
+  }
+
+  .nav-section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 14px 20px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 400;
+    transition: all 0.2s;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    color: var(--text);
+    background: var(--glow);
+    border-left-color: var(--accent);
+  }
+
+  .nav-item .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+
+  .nav-item:hover .dot, .nav-item.active .dot {
+    background: var(--accent);
+  }
+
+  /* ───── MAIN CONTENT ───── */
+  .main {
+    margin-left: 260px;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ───── HERO ───── */
+  .hero {
+    padding: 80px 60px 60px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(124,106,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(124,106,255,0.1);
+    border: 1px solid rgba(124,106,255,0.3);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .hero h1 span { color: var(--accent); }
+
+  .hero p {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 560px;
+    font-weight: 300;
+  }
+
+  .hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .tag {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid;
+  }
+
+  .tag-purple { color: var(--accent); border-color: rgba(124,106,255,0.4); background: rgba(124,106,255,0.08); }
+  .tag-red    { color: var(--accent2); border-color: rgba(255,106,106,0.4); background: rgba(255,106,106,0.08); }
+  .tag-green  { color: var(--accent3); border-color: rgba(106,255,176,0.4); background: rgba(106,255,176,0.08); }
+  .tag-yellow { color: var(--accent4); border-color: rgba(255,208,106,0.4); background: rgba(255,208,106,0.08); }
+
+  /* ───── CONTENT AREA ───── */
+  .content {
+    padding: 0 60px 80px;
+    max-width: 1000px;
+  }
+
+  /* ───── SECTION ───── */
+  .section {
+    padding: 60px 0 0;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(124,106,255,0.1);
+    border: 1px solid rgba(124,106,255,0.25);
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.1em;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  /* ───── CARDS ───── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    transition: border-color 0.25s;
+  }
+
+  .card:hover { border-color: rgba(124,106,255,0.4); }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-title .icon {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .icon-purple { background: rgba(124,106,255,0.15); }
+  .icon-red    { background: rgba(255,106,106,0.15); }
+  .icon-green  { background: rgba(106,255,176,0.15); }
+  .icon-yellow { background: rgba(255,208,106,0.15); }
+
+  .card p { color: var(--muted); font-size: 14px; }
+
+  /* ───── CODE BLOCKS ───── */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    margin: 12px 0 20px;
+    position: relative;
+  }
+
+  pre::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 8px; right: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #c9d1d9;
+  }
+
+  .kw  { color: #ff7b72; }
+  .ty  { color: #79c0ff; }
+  .st  { color: #a5d6ff; }
+  .cm  { color: #8b949e; font-style: italic; }
+  .nm  { color: #d2a8ff; }
+  .fn  { color: #ffa657; }
+  .nu  { color: #6effbf; }
+  .an  { color: #e3b341; }
+
+  /* ───── INLINE CODE ───── */
+  .ic {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: rgba(124,106,255,0.12);
+    color: #c9d1d9;
+    padding: 1px 7px;
+    border-radius: 4px;
+    border: 1px solid rgba(124,106,255,0.2);
+  }
+
+  /* ───── CALLOUTS ───── */
+  .callout {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    display: flex;
+    gap: 14px;
+    font-size: 14px;
+  }
+
+  .callout-warn {
+    background: rgba(255,208,106,0.08);
+    border: 1px solid rgba(255,208,106,0.3);
+    color: #e0c87a;
+  }
+
+  .callout-info {
+    background: rgba(106,255,176,0.06);
+    border: 1px solid rgba(106,255,176,0.25);
+    color: #7adba8;
+  }
+
+  .callout-danger {
+    background: rgba(255,106,106,0.08);
+    border: 1px solid rgba(255,106,106,0.3);
+    color: #e07a7a;
+  }
+
+  .callout-purple {
+    background: rgba(124,106,255,0.08);
+    border: 1px solid rgba(124,106,255,0.3);
+    color: #a89aff;
+  }
+
+  .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+
+  /* ───── TABLE ───── */
+  .tbl-wrap { overflow-x: auto; margin: 16px 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  th {
+    background: var(--surface2);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  /* ───── PILL LABELS ───── */
+  .pill {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .pill-g { background: rgba(106,255,176,0.15); color: var(--accent3); }
+  .pill-r { background: rgba(255,106,106,0.15); color: var(--accent2); }
+  .pill-y { background: rgba(255,208,106,0.15); color: var(--accent4); }
+  .pill-p { background: rgba(124,106,255,0.15); color: var(--accent); }
+
+  /* ───── SUBSECTION HEADING ───── */
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 32px 0 12px;
+  }
+
+  h4 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 20px 0 8px;
+  }
+
+  p { color: var(--muted); margin-bottom: 10px; font-size: 14.5px; }
+  p strong { color: var(--text); font-weight: 500; }
+
+  ul { padding-left: 20px; margin-bottom: 14px; }
+  ul li { color: var(--muted); font-size: 14px; margin-bottom: 6px; }
+  ul li strong { color: var(--text); font-weight: 500; }
+
+  /* ───── GRID ───── */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  @media (max-width: 800px) {
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+  }
+
+  /* ───── INTERVIEW TIP BOX ───── */
+  .itip {
+    background: linear-gradient(135deg, rgba(124,106,255,0.08), rgba(255,106,106,0.05));
+    border: 1px solid rgba(124,106,255,0.35);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 16px 0;
+  }
+
+  .itip-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .itip p { color: var(--text); font-size: 14px; margin: 0; }
+
+  /* ───── DIVIDER ───── */
+  .div { height: 1px; background: var(--border); margin: 40px 0; }
+
+  /* ───── SCROLLBAR ───── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* ───── ANIMATIONS ───── */
+  .section { animation: fadeUp 0.5s ease both; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ───── MOBILE ───── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .hero, .content { padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">⬡ FAANG Prep</div>
+    <div class="title">Java OOPs<br>Master Notes</div>
+  </div>
+
+  <div class="nav-section-label">Core Pillars</div>
+  <a href="#classes" class="nav-item"><span class="dot"></span>Classes &amp; Objects</a>
+  <a href="#constructors" class="nav-item"><span class="dot"></span>Constructors &amp; this</a>
+  <a href="#inheritance" class="nav-item"><span class="dot"></span>Inheritance</a>
+  <a href="#polymorphism" class="nav-item"><span class="dot"></span>Polymorphism</a>
+  <a href="#abstraction" class="nav-item"><span class="dot"></span>Abstraction</a>
+  <a href="#encapsulation" class="nav-item"><span class="dot"></span>Encapsulation</a>
+
+  <div class="nav-section-label">Modifiers &amp; Keywords</div>
+  <a href="#access" class="nav-item"><span class="dot"></span>Access Control</a>
+  <a href="#static" class="nav-item"><span class="dot"></span>static Keyword</a>
+  <a href="#final" class="nav-item"><span class="dot"></span>final Keyword</a>
+
+  <div class="nav-section-label">Advanced</div>
+  <a href="#interfaces" class="nav-item"><span class="dot"></span>Interfaces</a>
+  <a href="#abstract-class" class="nav-item"><span class="dot"></span>Abstract Classes</a>
+  <a href="#enums" class="nav-item"><span class="dot"></span>Enums</a>
+  <a href="#inner-classes" class="nav-item"><span class="dot"></span>Inner Classes</a>
+  <a href="#packages" class="nav-item"><span class="dot"></span>Packages</a>
+  <a href="#singleton" class="nav-item"><span class="dot"></span>Singleton Pattern</a>
+  <a href="#wrapper" class="nav-item"><span class="dot"></span>Wrapper Classes</a>
+
+  <div class="nav-section-label">Modern Java OOP</div>
+  <a href="#object-class" class="nav-item"><span class="dot"></span>Object Class</a>
+  <a href="#casting" class="nav-item"><span class="dot"></span>Casting &amp; instanceof</a>
+  <a href="#gc-memory" class="nav-item"><span class="dot"></span>GC &amp; Memory Model</a>
+  <a href="#string-oop" class="nav-item"><span class="dot"></span>String &amp; Immutability</a>
+  <a href="#comparable" class="nav-item"><span class="dot"></span>Comparable vs Comparator</a>
+  <a href="#functional" class="nav-item"><span class="dot"></span>Functional Interfaces</a>
+  <a href="#records-sealed" class="nav-item"><span class="dot"></span>Records &amp; Sealed Classes</a>
+  <a href="#interview" class="nav-item"><span class="dot"></span>🎯 Interview Q&amp;A</a>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">Java OOPs · FAANG &amp; MAANG Level</div>
+    <h1>Master <span>Object-Oriented</span><br>Programming in Java</h1>
+    <p>The definitive one-stop revision sheet — every OOP concept explained, coded, and interview-ready. Built for cracking top product companies.</p>
+    <div class="hero-tags">
+      <span class="tag tag-purple">Classes &amp; Objects</span>
+      <span class="tag tag-red">Inheritance</span>
+      <span class="tag tag-green">Polymorphism</span>
+      <span class="tag tag-yellow">Abstraction</span>
+      <span class="tag tag-purple">Encapsulation</span>
+      <span class="tag tag-red">Interfaces</span>
+      <span class="tag tag-green">Abstract Classes</span>
+      <span class="tag tag-yellow">Enums &amp; Inner Classes</span>
+    </div>
+  </div>
+
+  <!-- ═══ CONTENT ═══ -->
+  <div class="content">
+
+    <!-- ─── 1. CLASSES & OBJECTS ─── -->
+    <div class="section" id="classes">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2 class="section-title">Classes &amp; Objects</h2>
+      </div>
+
+      <p><strong>Class</strong> = a logical blueprint / template. <strong>Object</strong> = a physical instance occupying heap memory. Objects have three essential properties: <strong>State</strong> (fields), <strong>Identity</strong> (memory address makes it unique), and <strong>Behavior</strong> (methods).</p>
+
+      <pre data-lang="java"><code><span class="kw">class</span> <span class="ty">Student</span> {
+    <span class="cm">// State (fields)</span>
+    <span class="ty">String</span> name;
+    <span class="kw">int</span>    rno;
+    <span class="kw">float</span>  marks;
+
+    <span class="cm">// Behavior (methods)</span>
+    <span class="kw">void</span> <span class="fn">greeting</span>() {
+        <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Hello, I am "</span> + name);
+    }
+}
+
+<span class="cm">// Creating objects</span>
+<span class="ty">Student</span> s1 = <span class="kw">new</span> <span class="ty">Student</span>();  <span class="cm">// 's1' is a reference, object lives on heap</span>
+<span class="ty">Student</span> s2 = s1;              <span class="cm">// s2 and s1 point to THE SAME object — NO copy!</span></code></pre>
+
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Reference vs Object:</strong> Assigning <span class="ic">s2 = s1</span> copies the reference, not the object. Both variables point to the same heap location. Mutating via s2 changes what s1 sees.</div>
+      </div>
+
+      <h3>The <span class="ic">new</span> Keyword — How it works</h3>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-purple">🖥</div>Compiler (LHS)</div>
+          <p>Checks if class <span class="ic">Student</span> exists. Declares reference variable <span class="ic">s1</span>. Initially it's <span class="ic">null</span>.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-green">⚙️</div>JVM (RHS — new)</div>
+          <p>Allocates heap memory for the object, calls the constructor, returns the object's reference which gets stored in <span class="ic">s1</span>.</p>
+        </div>
+      </div>
+
+      <h3>Dot Operator <span class="ic">.</span></h3>
+      <p>Accesses instance members on an object or static members via class name.</p>
+      <pre data-lang="java"><code>s1.name = <span class="st">"Gauri"</span>;     <span class="cm">// instance field</span>
+s1.<span class="fn">greeting</span>();        <span class="cm">// instance method</span>
+<span class="ty">Math</span>.<span class="fn">sqrt</span>(<span class="nu">16</span>);         <span class="cm">// static method via class name</span></code></pre>
+    </div>
+
+    <!-- ─── 2. CONSTRUCTORS ─── -->
+    <div class="section" id="constructors">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2 class="section-title">Constructors, <span class="ic" style="font-size:18px">this</span> &amp; <span class="ic" style="font-size:18px">final</span></h2>
+      </div>
+
+      <p>A constructor initialises an object the moment it's created. <strong>No return type</strong>, same name as class. Called automatically by <span class="ic">new</span>.</p>
+
+      <div class="grid3">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-purple">①</div>Default</div>
+          <p>No parameters. JVM provides one if you don't declare any constructor at all.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-red">②</div>Parameterised</div>
+          <p>Takes arguments to set field values at creation time.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-green">③</div>Copy</div>
+          <p>Takes an object of the same class and copies its fields (manual in Java, unlike C++).</p>
+        </div>
+      </div>
+
+      <pre data-lang="java"><code><span class="kw">class</span> <span class="ty">Student</span> {
+    <span class="kw">int</span> rno; <span class="ty">String</span> name; <span class="kw">float</span> marks;
+
+    <span class="cm">// Default — chains to parameterised using this()</span>
+    <span class="ty">Student</span>() { <span class="kw">this</span>(<span class="nu">0</span>, <span class="st">"default"</span>, <span class="nu">0</span>); }
+
+    <span class="cm">// Parameterised</span>
+    <span class="ty">Student</span>(<span class="kw">int</span> rno, <span class="ty">String</span> name, <span class="kw">float</span> marks) {
+        <span class="kw">this</span>.rno   = rno;
+        <span class="kw">this</span>.name  = name;
+        <span class="kw">this</span>.marks = marks;
+    }
+
+    <span class="cm">// Copy constructor</span>
+    <span class="ty">Student</span>(<span class="ty">Student</span> other) {
+        <span class="kw">this</span>.rno   = other.rno;
+        <span class="kw">this</span>.name  = other.name;
+        <span class="kw">this</span>.marks = other.marks;
+    }
+}</code></pre>
+
+      <h3>The <span class="ic">this</span> Keyword</h3>
+      <ul>
+        <li><strong>Refers to current object</strong> — resolves name collision between local param and field.</li>
+        <li><span class="ic">this()</span> — calls another constructor of the same class (constructor chaining). <strong>Must be first statement.</strong></li>
+      </ul>
+
+      <h3>The <span class="ic">final</span> Keyword</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Used On</th><th>Effect</th><th>Key Point</th></tr>
+          <tr><td><span class="ic">final</span> variable</td><td>Value can't be reassigned</td><td>Primitives → value frozen. Reference → can't re-point, but object's fields can still change.</td></tr>
+          <tr><td><span class="ic">final</span> method</td><td>Can't be overridden</td><td>Enables early (compile-time) binding → performance boost via inlining.</td></tr>
+          <tr><td><span class="ic">final</span> class</td><td>Can't be extended (subclassed)</td><td>Implicitly makes all methods final. Can't be both <span class="ic">abstract</span> + <span class="ic">final</span>.</td></tr>
+        </table>
+      </div>
+
+      <h3>The <span class="ic">finalize()</span> Method</h3>
+      <p>Called by the Garbage Collector just before an object is reclaimed. Use to release non-Java resources. <strong>Deprecated in Java 9+</strong> — prefer <span class="ic">try-with-resources</span>.</p>
+
+      <div class="itip">
+        <div class="itip-label">🎯 Interview Tip</div>
+        <p>Interviewers love asking: <em>"Can a constructor be private?"</em> — Yes! That's the backbone of the <strong>Singleton pattern</strong>. Also know: constructors are <strong>not</strong> inherited, but <span class="ic">super()</span> chains them.</p>
+      </div>
+
+      <h3>Constructor Chaining with Inheritance</h3>
+      <pre data-lang="java"><code><span class="kw">class</span> <span class="ty">Base</span> {
+    <span class="ty">Base</span>() { <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Base"</span>); }
+}
+<span class="kw">class</span> <span class="ty">Derived</span> <span class="kw">extends</span> <span class="ty">Base</span> {
+    <span class="ty">Derived</span>() {
+        <span class="cm">// super() called implicitly here — Base constructor runs first</span>
+        <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Derived"</span>);
+    }
+}
+<span class="cm">// Output: Base  →  Derived</span></code></pre>
+
+      <div class="callout callout-danger">
+        <span class="callout-icon">🔴</span>
+        <div>If the superclass has <strong>only parameterised constructors</strong>, the subclass <strong>must explicitly call</strong> <span class="ic">super(args)</span> — otherwise a compile error occurs.</div>
+      </div>
+    </div>
+
+    <!-- ─── 3. INHERITANCE ─── -->
+    <div class="section" id="inheritance">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2 class="section-title">Inheritance</h2>
+      </div>
+
+      <p>Inheritance lets a subclass acquire the properties and behaviours of a superclass. Use <span class="ic">extends</span>. Java supports <strong>single inheritance</strong> only (no multiple class inheritance).</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Type</th><th>Structure</th><th>Java Support?</th></tr>
+          <tr><td>Single</td><td>A → B</td><td><span class="pill pill-g">✓ Yes</span></td></tr>
+          <tr><td>Multilevel</td><td>A → B → C</td><td><span class="pill pill-g">✓ Yes</span></td></tr>
+          <tr><td>Hierarchical</td><td>A → B, A → C</td><td><span class="pill pill-g">✓ Yes</span></td></tr>
+          <tr><td>Multiple</td><td>A + B → C (two parents)</td><td><span class="pill pill-r">✗ Classes No</span> / <span class="pill pill-g">✓ Via Interfaces</span></td></tr>
+          <tr><td>Hybrid</td><td>Mix of above</td><td><span class="pill pill-r">✗ Classes No</span> / <span class="pill pill-g">✓ Via Interfaces</span></td></tr>
+        </table>
+      </div>
+
+      <pre data-lang="java"><code><span class="kw">class</span> <span class="ty">Box</span> {
+    <span class="kw">private</span> <span class="kw">double</span> width, height, depth;
+
+    <span class="ty">Box</span>(<span class="kw">double</span> w, <span class="kw">double</span> h, <span class="kw">double</span> d) {
+        width = w; height = h; depth = d;
+    }
+    <span class="kw">double</span> <span class="fn">volume</span>() { <span class="kw">return</span> width * height * depth; }
+}
+
+<span class="kw">class</span> <span class="ty">BoxWeight</span> <span class="kw">extends</span> <span class="ty">Box</span> {
+    <span class="kw">double</span> weight;
+
+    <span class="ty">BoxWeight</span>(<span class="kw">double</span> w, <span class="kw">double</span> h, <span class="kw">double</span> d, <span class="kw">double</span> m) {
+        <span class="kw">super</span>(w, h, d); <span class="cm">// call superclass constructor</span>
+        weight = m;
+    }
+}</code></pre>
+
+      <h3>The <span class="ic">super</span> Keyword — Two Uses</h3>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-purple">①</div>super() — Call parent constructor</div>
+          <p>Must be the <strong>first statement</strong> in the subclass constructor. Always refers to the immediate parent.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-red">②</div>super.member — Access shadowed member</div>
+          <p>Access a field or method of the superclass that's been hidden/overridden by the subclass.</p>
+        </div>
+      </div>
+
+      <h3>Superclass Reference → Subclass Object</h3>
+      <pre data-lang="java"><code><span class="ty">Box</span> plainBox = <span class="kw">new</span> <span class="ty">BoxWeight</span>(<span class="nu">1</span>,<span class="nu">2</span>,<span class="nu">3</span>,<span class="nu">4</span>);
+<span class="cm">// plainBox can ONLY access Box members, not 'weight'</span>
+<span class="cm">// But at runtime, overridden methods resolve to BoxWeight version (polymorphism)</span></code></pre>
+
+      <div class="callout callout-info">
+        <span class="callout-icon">💡</span>
+        <div>It is the <strong>type of the object</strong>, NOT the reference variable, that determines which overridden method executes at runtime. The reference type determines <em>which members are accessible</em> at compile time.</div>
+      </div>
+
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Polymorphism does NOT apply to instance variables</strong> — only to methods. Variable access is resolved at compile time based on reference type.</div>
+      </div>
+    </div>
+
+    <!-- ─── 4. POLYMORPHISM ─── -->
+    <div class="section" id="polymorphism">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2 class="section-title">Polymorphism</h2>
+      </div>
+
+      <p>Poly = many, Morphism = forms. One interface, multiple implementations. Java achieves it in two ways:</p>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-purple">①</div>Compile-Time (Static)</div>
+          <p><strong>Method Overloading</strong> — same method name, different parameter list. Resolved by the compiler. Also called <em>early binding</em>.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-green">②</div>Runtime (Dynamic)</div>
+          <p><strong>Method Overriding + Dynamic Dispatch</strong> — resolved by JVM at runtime based on actual object type. Also called <em>late binding</em>.</p>
+        </div>
+      </div>
+
+      <h3>Method Overloading</h3>
+      <p>Same name, different parameters. Return type alone is <strong>not sufficient</strong> to overload.</p>
+      <pre data-lang="java"><code><span class="kw">class</span> <span class="ty">Calc</span> {
+    <span class="kw">int</span>    <span class="fn">add</span>(<span class="kw">int</span> a, <span class="kw">int</span> b)               { <span class="kw">return</span> a + b; }
+    <span class="kw">double</span> <span class="fn">add</span>(<span class="kw">double</span> a, <span class="kw">double</span> b)         { <span class="kw">return</span> a + b; }
+    <span class="kw">int</span>    <span class="fn">add</span>(<span class="kw">int</span> a, <span class="kw">int</span> b, <span class="kw">int</span> c)        { <span class="kw">return</span> a + b + c; }
+}
+
+<span class="cm">// Auto type promotion: if test(int) not found, Java tries test(double)</span></code></pre>
+
+      <h3>Method Overriding &amp; Dynamic Dispatch</h3>
+      <pre data-lang="java"><code><span class="kw">class</span> <span class="ty">Animal</span> {
+    <span class="kw">void</span> <span class="fn">sound</span>() { <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"..."</span>); }
+}
+<span class="kw">class</span> <span class="ty">Dog</span> <span class="kw">extends</span> <span class="ty">Animal</span> {
+    <span class="an">@Override</span>
+    <span class="kw">void</span> <span class="fn">sound</span>() { <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Woof"</span>); }
+}
+<span class="kw">class</span> <span class="ty">Cat</span> <span class="kw">extends</span> <span class="ty">Animal</span> {
+    <span class="an">@Override</span>
+    <span class="kw">void</span> <span class="fn">sound</span>() { <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Meow"</span>); }
+}
+
+<span class="ty">Animal</span> a = <span class="kw">new</span> <span class="ty">Dog</span>();
+a.<span class="fn">sound</span>(); <span class="cm">// "Woof" — determined at RUNTIME by actual object type</span>
+
+a = <span class="kw">new</span> <span class="ty">Cat</span>();
+a.<span class="fn">sound</span>(); <span class="cm">// "Meow"</span></code></pre>
+
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Feature</th><th>Overloading</th><th>Overriding</th></tr>
+          <tr><td>Class</td><td>Same class</td><td>Parent &amp; Child class</td></tr>
+          <tr><td>Parameters</td><td>Must differ</td><td>Must be identical</td></tr>
+          <tr><td>Return type</td><td>Can differ</td><td>Same or covariant</td></tr>
+          <tr><td>Binding</td><td>Compile-time</td><td>Runtime</td></tr>
+          <tr><td>Access modifier</td><td>Can be anything</td><td>Must be same or wider</td></tr>
+          <tr><td>static methods</td><td>Can overload</td><td>Cannot override (method hiding)</td></tr>
+          <tr><td>private/final</td><td>Can overload</td><td>Cannot override</td></tr>
+        </table>
+      </div>
+
+      <div class="callout callout-purple">
+        <span class="callout-icon">📌</span>
+        <div><strong>Covariant Return Type:</strong> If B extends A, an overriding method in B can return type B where parent returned A.</div>
+      </div>
+    </div>
+
+    <!-- ─── 5. ABSTRACTION ─── -->
+    <div class="section" id="abstraction">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2 class="section-title">Abstraction</h2>
+      </div>
+
+      <p>Hiding implementation details, exposing only the <em>what</em>, not the <em>how</em>. Achieved in Java via <strong>Abstract Classes</strong> and <strong>Interfaces</strong>.</p>
+
+      <h3>Abstract Classes</h3>
+      <ul>
+        <li>Declared with <span class="ic">abstract</span> keyword.</li>
+        <li><strong>Cannot be instantiated</strong> (no objects), but can hold references.</li>
+        <li>Can have <strong>abstract</strong> methods (no body) AND concrete methods (with body).</li>
+        <li>No abstract constructors or abstract static methods.</li>
+        <li>Subclass <strong>must implement all abstract methods</strong> — or it must also be declared abstract.</li>
+      </ul>
+
+      <pre data-lang="java"><code><span class="kw">abstract class</span> <span class="ty">Shape</span> {
+    <span class="ty">String</span> color;
+
+    <span class="ty">Shape</span>(<span class="ty">String</span> color) { <span class="kw">this</span>.color = color; }  <span class="cm">// concrete constructor</span>
+
+    <span class="kw">abstract double</span> <span class="fn">area</span>();          <span class="cm">// subclass MUST implement</span>
+    <span class="kw">abstract double</span> <span class="fn">perimeter</span>();
+
+    <span class="kw">void</span> <span class="fn">display</span>() {               <span class="cm">// concrete method</span>
+        <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Color: "</span> + color);
+    }
+}
+
+<span class="kw">class</span> <span class="ty">Circle</span> <span class="kw">extends</span> <span class="ty">Shape</span> {
+    <span class="kw">double</span> r;
+    <span class="ty">Circle</span>(<span class="ty">String</span> c, <span class="kw">double</span> r) { <span class="kw">super</span>(c); <span class="kw">this</span>.r = r; }
+
+    <span class="an">@Override</span> <span class="kw">double</span> <span class="fn">area</span>()      { <span class="kw">return</span> <span class="ty">Math</span>.PI * r * r; }
+    <span class="an">@Override</span> <span class="kw">double</span> <span class="fn">perimeter</span>() { <span class="kw">return</span> <span class="nu">2</span> * <span class="ty">Math</span>.PI * r; }
+}
+
+<span class="ty">Shape</span> s = <span class="kw">new</span> <span class="ty">Circle</span>(<span class="st">"Red"</span>, <span class="nu">5</span>);  <span class="cm">// ✅ superclass ref to subclass object</span></code></pre>
+
+      <div class="itip">
+        <div class="itip-label">🎯 Interview Tip</div>
+        <p>A public constructor on an abstract class is technically valid (abstract classes can have constructors for subclass chaining), but it makes little sense because you can never call <span class="ic">new AbstractClass()</span> directly. Interviewers love this nuance.</p>
+      </div>
+    </div>
+
+    <!-- ─── 6. ENCAPSULATION ─── -->
+    <div class="section" id="encapsulation">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2 class="section-title">Encapsulation</h2>
+      </div>
+
+      <p>Bundling data (fields) and methods that operate on that data within one unit (class), and restricting direct access from outside. Achieved via <span class="ic">private</span> fields + <span class="ic">public</span> getters/setters.</p>
+
+      <pre data-lang="java"><code><span class="kw">class</span> <span class="ty">BankAccount</span> {
+    <span class="kw">private double</span> balance;   <span class="cm">// hidden</span>
+
+    <span class="kw">public double</span> <span class="fn">getBalance</span>()         { <span class="kw">return</span> balance; }
+    <span class="kw">public void</span>   <span class="fn">deposit</span>(<span class="kw">double</span> amt)  { <span class="kw">if</span> (amt > <span class="nu">0</span>) balance += amt; }
+    <span class="kw">public void</span>   <span class="fn">withdraw</span>(<span class="kw">double</span> amt) {
+        <span class="kw">if</span> (amt > <span class="nu">0</span> && amt <= balance) balance -= amt;
+        <span class="kw">else</span> <span class="kw">throw new</span> <span class="ty">IllegalArgumentException</span>(<span class="st">"Insufficient funds"</span>);
+    }
+}</code></pre>
+
+      <div class="callout callout-info">
+        <span class="callout-icon">💡</span>
+        <div><strong>Encapsulation vs Abstraction:</strong> Encapsulation = <em>how you hide the data</em> (access control + getters/setters). Abstraction = <em>what you expose</em> (the interface/contract). Encapsulation is a mechanism, Abstraction is a design principle.</div>
+      </div>
+    </div>
+
+    <!-- ─── 7. ACCESS CONTROL ─── -->
+    <div class="section" id="access">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <h2 class="section-title">Access Control</h2>
+      </div>
+
+      <div class="tbl-wrap">
+        <table>
+          <tr>
+            <th>Modifier</th>
+            <th>Same Class</th>
+            <th>Same Package</th>
+            <th>Subclass (diff pkg)</th>
+            <th>World</th>
+          </tr>
+          <tr>
+            <td><span class="pill pill-g">public</span></td>
+            <td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-p">protected</span></td>
+            <td>✅</td><td>✅</td><td>✅</td><td>❌</td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-y">default (no mod)</span></td>
+            <td>✅</td><td>✅</td><td>❌</td><td>❌</td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-r">private</span></td>
+            <td>✅</td><td>❌</td><td>❌</td><td>❌</td>
+          </tr>
+        </table>
+      </div>
+
+      <h3>Protected — the Tricky One</h3>
+      <pre data-lang="java"><code><span class="cm">// package one</span>
+<span class="kw">class</span> <span class="ty">Base</span> { <span class="kw">protected void</span> <span class="fn">display</span>() { } }
+
+<span class="cm">// package two</span>
+<span class="kw">class</span> <span class="ty">Derived</span> <span class="kw">extends</span> <span class="ty">Base</span> {
+    <span class="kw">void</span> <span class="fn">show</span>() {
+        <span class="fn">display</span>();                <span class="cm">// ✅ via inheritance (current object)</span>
+        <span class="kw">new</span> <span class="ty">Derived</span>().<span class="fn">display</span>();  <span class="cm">// ✅ Derived type — allowed</span>
+        <span class="kw">new</span> <span class="ty">Base</span>().<span class="fn">display</span>();     <span class="cm">// ❌ Base type in diff package — NOT allowed</span>
+    }
+}</code></pre>
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠️</span>
+        <div>Protected allows access through a <strong>Derived-type reference</strong> outside the package. A Base-type reference in a different package does NOT get access even inside a subclass.</div>
+      </div>
+    </div>
+
+    <!-- ─── 8. STATIC ─── -->
+    <div class="section" id="static">
+      <div class="section-header">
+        <span class="section-num">08</span>
+        <h2 class="section-title">static Keyword</h2>
+      </div>
+
+      <p><span class="ic">static</span> members belong to the <strong>class</strong>, not to any instance. They exist even before any object is created.</p>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-purple">📦</div>Static Variable</div>
+          <p>One copy shared across all objects. Stored in method area (class area), not heap per object.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-red">⚡</div>Static Method</div>
+          <p>Can be called without object. Cannot access instance variables or use <span class="ic">this</span>/<span class="ic">super</span>. Can only call other static methods directly.</p>
+        </div>
+      </div>
+
+      <pre data-lang="java"><code><span class="kw">class</span> <span class="ty">Counter</span> {
+    <span class="kw">static int</span> count = <span class="nu">0</span>;   <span class="cm">// shared across all objects</span>
+    <span class="ty">Counter</span>() { count++; }
+    <span class="kw">static int</span> <span class="fn">getCount</span>() { <span class="kw">return</span> count; }
+}
+
+<span class="ty">Counter</span> c1 = <span class="kw">new</span> <span class="ty">Counter</span>();
+<span class="ty">Counter</span> c2 = <span class="kw">new</span> <span class="ty">Counter</span>();
+<span class="ty">System</span>.out.<span class="fn">println</span>(<span class="ty">Counter</span>.<span class="fn">getCount</span>()); <span class="cm">// 2</span></code></pre>
+
+      <h3>Static Block</h3>
+      <p>Executed <strong>once</strong> when the class is first loaded. Used for complex static initialisation.</p>
+      <pre data-lang="java"><code><span class="kw">class</span> <span class="ty">Config</span> {
+    <span class="kw">static final</span> <span class="ty">String</span> DB_URL;
+    <span class="kw">static</span> {
+        <span class="cm">// runs once at class load time</span>
+        DB_URL = <span class="st">"jdbc:mysql://localhost/mydb"</span>;
+        <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Class loaded"</span>);
+    }
+}</code></pre>
+
+      <div class="callout callout-purple">
+        <span class="callout-icon">📌</span>
+        <div><strong>Only nested (inner) classes can be static.</strong> Top-level classes cannot be static. Static nested classes do NOT have a reference to the outer class instance.</div>
+      </div>
+
+      <div class="callout callout-danger">
+        <span class="callout-icon">🔴</span>
+        <div>Static methods <strong>cannot be overridden</strong> — they are resolved at compile time (method hiding). Static interface methods are <strong>not inherited</strong> by implementing classes or sub-interfaces.</div>
+      </div>
+    </div>
+
+    <!-- ─── 9. INTERFACES ─── -->
+    <div class="section" id="interfaces">
+      <div class="section-header">
+        <span class="section-num">09</span>
+        <h2 class="section-title">Interfaces</h2>
+      </div>
+
+      <p>An interface is a pure <strong>contract</strong> — specifies <em>what</em> a class does, not <em>how</em>. Solves the multiple inheritance problem.</p>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-purple">📋</div>Default Rules</div>
+          <p>All methods: <span class="ic">public abstract</span> by default.<br>All variables: <span class="ic">public static final</span> by default (must be initialised).</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-green">🔌</div>Multiple Implementation</div>
+          <p>A class can <span class="ic">implement</span> multiple interfaces. An interface can <span class="ic">extend</span> multiple interfaces.</p>
+        </div>
+      </div>
+
+      <pre data-lang="java"><code><span class="kw">interface</span> <span class="ty">Flyable</span> {
+    <span class="kw">int</span> MAX_SPEED = <span class="nu">1000</span>;           <span class="cm">// public static final — implicitly</span>
+    <span class="kw">void</span> <span class="fn">fly</span>();                      <span class="cm">// public abstract — implicitly</span>
+
+    <span class="kw">default void</span> <span class="fn">land</span>() {           <span class="cm">// Java 8+ default method</span>
+        <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Landing..."</span>);
+    }
+
+    <span class="kw">static void</span> <span class="fn">info</span>() {            <span class="cm">// Java 8+ static method — NOT inherited</span>
+        <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Flyable interface"</span>);
+    }
+}
+
+<span class="kw">interface</span> <span class="ty">Swimmable</span> { <span class="kw">void</span> <span class="fn">swim</span>(); }
+
+<span class="kw">class</span> <span class="ty">Duck</span> <span class="kw">implements</span> <span class="ty">Flyable</span>, <span class="ty">Swimmable</span> {
+    <span class="an">@Override</span> <span class="kw">public void</span> <span class="fn">fly</span>()  { <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Duck flying"</span>); }
+    <span class="an">@Override</span> <span class="kw">public void</span> <span class="fn">swim</span>() { <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Duck swimming"</span>); }
+}</code></pre>
+
+      <h3>Default Method Conflict Resolution Rules</h3>
+      <ol style="padding-left:20px; color: var(--muted); font-size:14px;">
+        <li style="margin-bottom:8px;"><span style="color:var(--text)"><strong>Class impl wins over interface default</strong></span> — if the class provides the method, that's used.</li>
+        <li style="margin-bottom:8px;"><span style="color:var(--text)"><strong>Two interfaces with same default → compile error</strong></span> unless the class overrides the method.</li>
+        <li style="margin-bottom:8px;"><span style="color:var(--text)"><strong>Child interface default wins over parent interface default</strong></span>.</li>
+      </ol>
+
+      <div class="itip">
+        <div class="itip-label">🎯 Interview Tip</div>
+        <p>Key question: <em>"Why can't interfaces have instance variables?"</em> — Because variables in interfaces are <span class="ic">static final</span>. They're class-level constants, not state. Interfaces model capabilities (contracts), not state machines.</p>
+      </div>
+
+      <h3>Interface vs Abstract Class</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Aspect</th><th>Interface</th><th>Abstract Class</th></tr>
+          <tr><td>Methods</td><td>abstract + default + static (Java 8+)</td><td>abstract + concrete</td></tr>
+          <tr><td>Variables</td><td>public static final only</td><td>Any (instance, static, final, non-final)</td></tr>
+          <tr><td>Constructors</td><td>❌ None</td><td>✅ Yes (not instantiable, but for chaining)</td></tr>
+          <tr><td>Multiple "inheritance"</td><td>✅ A class can implement many</td><td>❌ A class can extend only one</td></tr>
+          <tr><td>Access modifiers on members</td><td>public only (implicitly)</td><td>Any (private, protected, etc.)</td></tr>
+          <tr><td>Use when</td><td>Unrelated classes need same capability</td><td>Related classes share common base code</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── 10. ABSTRACT CLASS ─── -->
+    <div class="section" id="abstract-class">
+      <div class="section-header">
+        <span class="section-num">10</span>
+        <h2 class="section-title">Abstract Classes (Deep Dive)</h2>
+      </div>
+
+      <h3>Key Rules at a Glance</h3>
+      <ul>
+        <li>Declared with <span class="ic">abstract</span>. Cannot instantiate with <span class="ic">new</span>.</li>
+        <li>Can have abstract methods (no body) and concrete methods (with body).</li>
+        <li><strong>No abstract constructors. No abstract static methods.</strong> (Can have static methods though.)</li>
+        <li>Any subclass must implement ALL abstract methods, or itself be abstract.</li>
+        <li>Can be used as a reference type for runtime polymorphism.</li>
+        <li>Cannot be both <span class="ic">abstract</span> and <span class="ic">final</span>.</li>
+      </ul>
+
+      <pre data-lang="java"><code><span class="kw">abstract class</span> <span class="ty">Vehicle</span> {
+    <span class="ty">String</span> brand;
+
+    <span class="ty">Vehicle</span>(<span class="ty">String</span> brand) { <span class="kw">this</span>.brand = brand; }
+
+    <span class="kw">abstract void</span> <span class="fn">fuelType</span>();    <span class="cm">// must be overridden</span>
+
+    <span class="kw">void</span> <span class="fn">start</span>() { <span class="ty">System</span>.out.<span class="fn">println</span>(brand + <span class="st">" started"</span>); } <span class="cm">// concrete</span>
+}
+
+<span class="kw">class</span> <span class="ty">Car</span> <span class="kw">extends</span> <span class="ty">Vehicle</span> {
+    <span class="ty">Car</span>(<span class="ty">String</span> b) { <span class="kw">super</span>(b); }
+    <span class="an">@Override</span> <span class="kw">void</span> <span class="fn">fuelType</span>() { <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Petrol/Diesel"</span>); }
+}
+
+<span class="ty">Vehicle</span> v = <span class="kw">new</span> <span class="ty">Car</span>(<span class="st">"Toyota"</span>);   <span class="cm">// ✅ superclass ref</span>
+v.<span class="fn">start</span>();     <span class="cm">// Toyota started</span>
+v.<span class="fn">fuelType</span>(); <span class="cm">// Petrol/Diesel  ← runtime dispatch</span></code></pre>
+    </div>
+
+    <!-- ─── 11. ENUMS ─── -->
+    <div class="section" id="enums">
+      <div class="section-header">
+        <span class="section-num">11</span>
+        <h2 class="section-title">Enums</h2>
+      </div>
+
+      <p>An enum is a special class representing a group of named constants. Internally each constant is a <span class="ic">public static final</span> instance of the enum class.</p>
+
+      <pre data-lang="java"><code><span class="kw">enum</span> <span class="ty">Day</span> {
+    MON, TUE, WED, THU, FRI, SAT, SUN;
+    <span class="cm">// each is: public static final Day MON = new Day();</span>
+}
+
+<span class="ty">Day</span> d = <span class="ty">Day</span>.MON;
+<span class="ty">System</span>.out.<span class="fn">println</span>(d);                  <span class="cm">// MON</span>
+<span class="ty">System</span>.out.<span class="fn">println</span>(d.<span class="fn">ordinal</span>());        <span class="cm">// 0 (index)</span>
+<span class="ty">System</span>.out.<span class="fn">println</span>(d.<span class="fn">name</span>());           <span class="cm">// "MON"</span>
+<span class="ty">Day</span>[] all = <span class="ty">Day</span>.<span class="fn">values</span>();               <span class="cm">// array of all constants</span>
+<span class="ty">Day</span> fri = <span class="ty">Day</span>.<span class="fn">valueOf</span>(<span class="st">"FRI"</span>);           <span class="cm">// from string</span></code></pre>
+
+      <h3>Enum with Constructor &amp; Methods</h3>
+      <pre data-lang="java"><code><span class="kw">enum</span> <span class="ty">Planet</span> {
+    MERCURY(<span class="nu">3.303e+23</span>, <span class="nu">2.4397e6</span>),
+    VENUS  (<span class="nu">4.869e+24</span>, <span class="nu">6.0518e6</span>),
+    EARTH  (<span class="nu">5.976e+24</span>, <span class="nu">6.37814e6</span>);
+
+    <span class="kw">private final double</span> mass, radius;
+
+    <span class="cm">// constructor MUST be private or package-private</span>
+    <span class="ty">Planet</span>(<span class="kw">double</span> mass, <span class="kw">double</span> radius) {
+        <span class="kw">this</span>.mass = mass; <span class="kw">this</span>.radius = radius;
+    }
+
+    <span class="kw">double</span> <span class="fn">surfaceGravity</span>() { <span class="kw">return</span> <span class="nu">6.67300E-11</span> * mass / (radius * radius); }
+}</code></pre>
+
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Rule</th><th>Detail</th></tr>
+          <tr><td>Extends</td><td>Implicitly extends <span class="ic">java.lang.Enum</span>. Cannot extend anything else. Cannot be superclassed.</td></tr>
+          <tr><td>Implements</td><td>Can implement multiple interfaces.</td></tr>
+          <tr><td>Constructor</td><td>Must be private or default (not public/protected).</td></tr>
+          <tr><td>Methods</td><td>Concrete only — no abstract methods.</td></tr>
+          <tr><td>Comparison</td><td>Use <span class="ic">==</span> (both reference check and type-safe). <span class="ic">.equals()</span> also works.</td></tr>
+          <tr><td>In switch</td><td>Can be used in <span class="ic">switch</span> statements/expressions.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── 12. INNER CLASSES ─── -->
+    <div class="section" id="inner-classes">
+      <div class="section-header">
+        <span class="section-num">12</span>
+        <h2 class="section-title">Inner Classes</h2>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-purple">①</div>Non-static Inner Class</div>
+          <p>Has access to outer class instance members. Requires outer class instance to instantiate: <span class="ic">outer.new Inner()</span></p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-red">②</div>Static Nested Class</div>
+          <p>No implicit reference to outer class. Can have static variables. Instantiate as: <span class="ic">new Outer.Nested()</span></p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-green">③</div>Local Inner Class</div>
+          <p>Defined inside a method. Scope limited to that method. Can access final/effectively-final local vars.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-yellow">④</div>Anonymous Inner Class</div>
+          <p>No name. Defined and instantiated in one expression. Common in event listeners / functional interfaces before lambdas.</p>
+        </div>
+      </div>
+
+      <pre data-lang="java"><code><span class="kw">class</span> <span class="ty">Outer</span> {
+    <span class="kw">private int</span> x = <span class="nu">10</span>;
+
+    <span class="cm">// Non-static inner — can access x</span>
+    <span class="kw">class</span> <span class="ty">Inner</span> { <span class="kw">void</span> <span class="fn">show</span>() { <span class="ty">System</span>.out.<span class="fn">println</span>(x); } }
+
+    <span class="cm">// Static nested — cannot access x directly</span>
+    <span class="kw">static class</span> <span class="ty">Nested</span> { <span class="kw">void</span> <span class="fn">hello</span>() { <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Hi"</span>); } }
+}
+
+<span class="cm">// Usage</span>
+<span class="ty">Outer</span> o = <span class="kw">new</span> <span class="ty">Outer</span>();
+<span class="ty">Outer</span>.<span class="ty">Inner</span>  i = o.<span class="kw">new</span> <span class="ty">Inner</span>();   <span class="cm">// non-static</span>
+<span class="ty">Outer</span>.<span class="ty">Nested</span> n = <span class="kw">new</span> <span class="ty">Outer</span>.<span class="ty">Nested</span>(); <span class="cm">// static nested</span>
+
+<span class="cm">// Anonymous inner class</span>
+<span class="ty">Runnable</span> r = <span class="kw">new</span> <span class="ty">Runnable</span>() {
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="fn">run</span>() { <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Running"</span>); }
+};
+<span class="cm">// Modern Java: use lambda instead → () -> System.out.println("Running")</span></code></pre>
+
+      <div class="callout callout-purple">
+        <span class="callout-icon">📌</span>
+        <div><strong>Only nested classes can be static.</strong> Top-level classes can never be static. Outermost class itself cannot be static.</div>
+      </div>
+    </div>
+
+    <!-- ─── 13. PACKAGES ─── -->
+    <div class="section" id="packages">
+      <div class="section-header">
+        <span class="section-num">13</span>
+        <h2 class="section-title">Packages</h2>
+      </div>
+
+      <p>Packages are containers for classes that provide <strong>naming</strong> and <strong>visibility control</strong>. They prevent name collisions and organise code hierarchically.</p>
+
+      <pre data-lang="java"><code><span class="kw">package</span> com.company.utils;  <span class="cm">// declares package — must be first statement</span>
+
+<span class="kw">import</span> java.util.ArrayList;  <span class="cm">// import specific class</span>
+<span class="kw">import</span> java.util.*;          <span class="cm">// import all public classes in package</span></code></pre>
+
+      <ul>
+        <li>Package structure mirrors <strong>directory structure</strong> on disk.</li>
+        <li>JVM finds packages via: current working directory → CLASSPATH env var → <span class="ic">-classpath</span> flag.</li>
+        <li>Only <span class="ic">public</span> classes in a package are accessible to code in other packages.</li>
+        <li><span class="ic">default</span> (no modifier) = package-private: accessible only within the same package.</li>
+      </ul>
+
+      <pre data-lang="java"><code><span class="cm">// com.company1.Employee and com.company2.Employee can coexist</span>
+com.company1.<span class="ty">Employee</span> e1 = <span class="kw">new</span> com.company1.<span class="ty">Employee</span>();
+com.company2.<span class="ty">Employee</span> e2 = <span class="kw">new</span> com.company2.<span class="ty">Employee</span>();</code></pre>
+    </div>
+
+    <!-- ─── 14. SINGLETON ─── -->
+    <div class="section" id="singleton">
+      <div class="section-header">
+        <span class="section-num">14</span>
+        <h2 class="section-title">Singleton Design Pattern</h2>
+      </div>
+
+      <p>Ensures a class has <strong>only one instance</strong> across the entire application. Widely used for DB connections, logging, config managers.</p>
+
+      <pre data-lang="java"><code><span class="kw">public class</span> <span class="ty">Singleton</span> {
+    <span class="cm">// 1. private static instance holder</span>
+    <span class="kw">private static</span> <span class="ty">Singleton</span> instance;
+
+    <span class="cm">// 2. private constructor — prevents external instantiation</span>
+    <span class="kw">private</span> <span class="ty">Singleton</span>() { }
+
+    <span class="cm">// 3. public static factory method</span>
+    <span class="kw">public static</span> <span class="ty">Singleton</span> <span class="fn">getInstance</span>() {
+        <span class="kw">if</span> (instance == <span class="kw">null</span>) {
+            instance = <span class="kw">new</span> <span class="ty">Singleton</span>();
+        }
+        <span class="kw">return</span> instance;
+    }
+}
+
+<span class="ty">Singleton</span> a = <span class="ty">Singleton</span>.<span class="fn">getInstance</span>();
+<span class="ty">Singleton</span> b = <span class="ty">Singleton</span>.<span class="fn">getInstance</span>();
+<span class="ty">System</span>.out.<span class="fn">println</span>(a == b);  <span class="cm">// true — same object!</span></code></pre>
+
+      <h3>Thread-Safe Singleton</h3>
+      <pre data-lang="java"><code><span class="kw">public class</span> <span class="ty">Singleton</span> {
+    <span class="cm">// volatile ensures visibility across threads</span>
+    <span class="kw">private static volatile</span> <span class="ty">Singleton</span> instance;
+
+    <span class="kw">private</span> <span class="ty">Singleton</span>() { }
+
+    <span class="kw">public static</span> <span class="ty">Singleton</span> <span class="fn">getInstance</span>() {
+        <span class="kw">if</span> (instance == <span class="kw">null</span>) {                    <span class="cm">// first check</span>
+            <span class="kw">synchronized</span> (<span class="ty">Singleton</span>.<span class="kw">class</span>) {
+                <span class="kw">if</span> (instance == <span class="kw">null</span>) {             <span class="cm">// double-check</span>
+                    instance = <span class="kw">new</span> <span class="ty">Singleton</span>();
+                }
+            }
+        }
+        <span class="kw">return</span> instance;
+    }
+}</code></pre>
+    </div>
+
+    <!-- ─── 15. WRAPPER CLASSES ─── -->
+    <div class="section" id="wrapper">
+      <div class="section-header">
+        <span class="section-num">15</span>
+        <h2 class="section-title">Wrapper Classes &amp; Pass-by-Value</h2>
+      </div>
+
+      <p>Java passes everything <strong>by value</strong>. For primitives, the value is copied. For objects, the <em>reference value</em> is copied (not the object).</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Primitive</th><th>Wrapper</th><th>Autoboxing Example</th></tr>
+          <tr><td>int</td><td>Integer</td><td><span class="ic">Integer i = 5;</span></td></tr>
+          <tr><td>double</td><td>Double</td><td><span class="ic">Double d = 3.14;</span></td></tr>
+          <tr><td>boolean</td><td>Boolean</td><td><span class="ic">Boolean b = true;</span></td></tr>
+          <tr><td>char</td><td>Character</td><td><span class="ic">Character c = 'A';</span></td></tr>
+          <tr><td>long</td><td>Long</td><td><span class="ic">Long l = 100L;</span></td></tr>
+        </table>
+      </div>
+
+      <pre data-lang="java"><code><span class="cm">// Why this swap doesn't work</span>
+<span class="kw">static void</span> <span class="fn">swap</span>(<span class="ty">Integer</span> a, <span class="ty">Integer</span> b) {
+    <span class="ty">Integer</span> temp = a; a = b; b = temp;  <span class="cm">// local references reassigned, originals unchanged</span>
+}
+<span class="cm">// Integer is IMMUTABLE — it uses final internally</span>
+<span class="cm">// Even though we pass references, reassigning a and b doesn't affect the caller</span>
+
+<span class="cm">// final with reference types — important nuance</span>
+<span class="kw">final</span> <span class="ty">Student</span> s = <span class="kw">new</span> <span class="ty">Student</span>(<span class="st">"Gauri"</span>);
+s.name = <span class="st">"Gauri Singhal"</span>;    <span class="cm">// ✅ allowed — modifying object's state</span>
+<span class="cm">// s = new Student("New"); ❌ not allowed — cannot re-assign reference</span></code></pre>
+    </div>
+
+    <!-- ─── 17. OBJECT CLASS ─── -->
+    <div class="section" id="object-class">
+      <div class="section-header">
+        <span class="section-num">17</span>
+        <h2 class="section-title">The Object Class</h2>
+      </div>
+
+      <p>Every class in Java <strong>implicitly extends <span class="ic">java.lang.Object</span></strong>. It sits at the root of the entire Java class hierarchy. Knowing its methods cold is mandatory for FAANG interviews.</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Method</th><th>Purpose</th><th>Override?</th></tr>
+          <tr><td><span class="ic">equals(Object o)</span></td><td>Logical equality check</td><td><span class="pill pill-g">Always pair with hashCode</span></td></tr>
+          <tr><td><span class="ic">hashCode()</span></td><td>Returns int hash for use in hash-based collections</td><td><span class="pill pill-g">Always pair with equals</span></td></tr>
+          <tr><td><span class="ic">toString()</span></td><td>String representation of object</td><td><span class="pill pill-g">Yes — very useful</span></td></tr>
+          <tr><td><span class="ic">clone()</span></td><td>Creates a shallow copy</td><td><span class="pill pill-y">Carefully — implement Cloneable</span></td></tr>
+          <tr><td><span class="ic">getClass()</span></td><td>Returns runtime class metadata</td><td><span class="pill pill-r">No — final</span></td></tr>
+          <tr><td><span class="ic">finalize()</span></td><td>Called before GC reclaims object</td><td><span class="pill pill-r">Deprecated Java 9+</span></td></tr>
+          <tr><td><span class="ic">wait() / notify() / notifyAll()</span></td><td>Thread synchronisation</td><td><span class="pill pill-r">No — final</span></td></tr>
+        </table>
+      </div>
+
+      <h3>The <span class="ic">equals()</span> + <span class="ic">hashCode()</span> Contract</h3>
+      <div class="callout callout-danger">
+        <span class="callout-icon">🔴</span>
+        <div><strong>Golden Rule:</strong> If you override <span class="ic">equals()</span>, you MUST override <span class="ic">hashCode()</span>. Objects that are <em>equal</em> must have the <em>same hash code</em>. Violating this breaks <span class="ic">HashMap</span>, <span class="ic">HashSet</span>, and every hash-based collection.</div>
+      </div>
+
+      <pre data-lang="java"><code><span class="kw">class</span> <span class="ty">Student</span> {
+    <span class="kw">int</span> id; <span class="ty">String</span> name;
+
+    <span class="ty">Student</span>(<span class="kw">int</span> id, <span class="ty">String</span> name) { <span class="kw">this</span>.id = id; <span class="kw">this</span>.name = name; }
+
+    <span class="an">@Override</span>
+    <span class="kw">public boolean</span> <span class="fn">equals</span>(<span class="ty">Object</span> o) {
+        <span class="kw">if</span> (<span class="kw">this</span> == o) <span class="kw">return true</span>;                  <span class="cm">// same reference</span>
+        <span class="kw">if</span> (o == <span class="kw">null</span> || <span class="fn">getClass</span>() != o.<span class="fn">getClass</span>()) <span class="kw">return false</span>;
+        <span class="ty">Student</span> s = (<span class="ty">Student</span>) o;
+        <span class="kw">return</span> id == s.id && <span class="ty">Objects</span>.<span class="fn">equals</span>(name, s.name);
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public int</span> <span class="fn">hashCode</span>() {
+        <span class="kw">return</span> <span class="ty">Objects</span>.<span class="fn">hash</span>(id, name);  <span class="cm">// consistent with equals</span>
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> <span class="ty">String</span> <span class="fn">toString</span>() {
+        <span class="kw">return</span> <span class="st">"Student{id="</span> + id + <span class="st">", name='"</span> + name + <span class="st">"'}"</span>;
+    }
+}
+
+<span class="cm">// Without override: two different objects with same data would be "not equal"</span>
+<span class="ty">Student</span> s1 = <span class="kw">new</span> <span class="ty">Student</span>(<span class="nu">1</span>, <span class="st">"Gauri"</span>);
+<span class="ty">Student</span> s2 = <span class="kw">new</span> <span class="ty">Student</span>(<span class="nu">1</span>, <span class="st">"Gauri"</span>);
+<span class="ty">System</span>.out.<span class="fn">println</span>(s1.equals(s2));   <span class="cm">// true  (after override)</span>
+<span class="ty">System</span>.out.<span class="fn">println</span>(s1 == s2);        <span class="cm">// false (different refs always)</span></code></pre>
+
+      <h3>Shallow vs Deep Copy with <span class="ic">clone()</span></h3>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-yellow">📋</div>Shallow Copy</div>
+          <p>Default <span class="ic">clone()</span> behaviour. Copies primitive fields by value but copies references — both original and clone point to the same nested objects.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-green">📋</div>Deep Copy</div>
+          <p>Override <span class="ic">clone()</span> and also clone all nested reference-type fields. Or use a copy constructor / serialisation.</p>
+        </div>
+      </div>
+
+      <pre data-lang="java"><code><span class="kw">class</span> <span class="ty">Address</span> { <span class="ty">String</span> city; }
+<span class="kw">class</span> <span class="ty">Person</span> <span class="kw">implements</span> <span class="ty">Cloneable</span> {
+    <span class="ty">String</span> name;
+    <span class="ty">Address</span> addr;
+
+    <span class="cm">// Deep clone</span>
+    <span class="an">@Override</span>
+    <span class="kw">protected</span> <span class="ty">Person</span> <span class="fn">clone</span>() <span class="kw">throws</span> <span class="ty">CloneNotSupportedException</span> {
+        <span class="ty">Person</span> copy = (<span class="ty">Person</span>) <span class="kw">super</span>.<span class="fn">clone</span>(); <span class="cm">// shallow</span>
+        copy.addr = <span class="kw">new</span> <span class="ty">Address</span>();            <span class="cm">// deep — new nested object</span>
+        copy.addr.city = <span class="kw">this</span>.addr.city;
+        <span class="kw">return</span> copy;
+    }
+}</code></pre>
+    </div>
+
+    <!-- ─── 18. CASTING ─── -->
+    <div class="section" id="casting">
+      <div class="section-header">
+        <span class="section-num">18</span>
+        <h2 class="section-title">Casting &amp; <span class="ic" style="font-size:20px">instanceof</span></h2>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-green">⬆</div>Upcasting</div>
+          <p>Subclass → Superclass. <strong>Implicit / automatic.</strong> Always safe. Access restricted to superclass members at compile time.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-red">⬇</div>Downcasting</div>
+          <p>Superclass → Subclass. <strong>Explicit cast required.</strong> Unsafe — throws <span class="ic">ClassCastException</span> at runtime if the object is not actually that subtype. Always check with <span class="ic">instanceof</span> first.</p>
+        </div>
+      </div>
+
+      <pre data-lang="java"><code><span class="kw">class</span> <span class="ty">Animal</span> { <span class="kw">void</span> <span class="fn">eat</span>() { } }
+<span class="kw">class</span> <span class="ty">Dog</span> <span class="kw">extends</span> <span class="ty">Animal</span> { <span class="kw">void</span> <span class="fn">bark</span>() { } }
+<span class="kw">class</span> <span class="ty">Cat</span> <span class="kw">extends</span> <span class="ty">Animal</span> { }
+
+<span class="cm">// Upcasting — implicit, safe</span>
+<span class="ty">Animal</span> a = <span class="kw">new</span> <span class="ty">Dog</span>();    <span class="cm">// Dog IS-A Animal ✅</span>
+
+<span class="cm">// Downcasting — explicit, risky</span>
+<span class="ty">Dog</span> d = (<span class="ty">Dog</span>) a;         <span class="cm">// ✅ safe because a actually holds a Dog</span>
+d.<span class="fn">bark</span>();
+
+<span class="cm">// ClassCastException at runtime:</span>
+<span class="ty">Animal</span> a2 = <span class="kw">new</span> <span class="ty">Cat</span>();
+<span class="ty">Dog</span> d2 = (<span class="ty">Dog</span>) a2;       <span class="cm">// ❌ ClassCastException! a2 is actually a Cat</span>
+
+<span class="cm">// Safe downcasting with instanceof</span>
+<span class="kw">if</span> (a <span class="kw">instanceof</span> <span class="ty">Dog</span>) {
+    <span class="ty">Dog</span> dog = (<span class="ty">Dog</span>) a;
+    dog.<span class="fn">bark</span>();
+}
+
+<span class="cm">// Java 16+ Pattern Matching instanceof (cleaner!)</span>
+<span class="kw">if</span> (a <span class="kw">instanceof</span> <span class="ty">Dog</span> dog) {    <span class="cm">// declares 'dog' in one step</span>
+    dog.<span class="fn">bark</span>();                 <span class="cm">// no explicit cast needed</span>
+}</code></pre>
+
+      <div class="callout callout-info">
+        <span class="callout-icon">💡</span>
+        <div><strong>instanceof</strong> returns <span class="ic">false</span> if the reference is <span class="ic">null</span>. It checks: "Is this object an instance of this class OR any of its subclasses?" — so <span class="ic">dog instanceof Animal</span> is also true.</div>
+      </div>
+    </div>
+
+    <!-- ─── 19. GC & MEMORY ─── -->
+    <div class="section" id="gc-memory">
+      <div class="section-header">
+        <span class="section-num">19</span>
+        <h2 class="section-title">Garbage Collection &amp; Memory Model</h2>
+      </div>
+
+      <p>Understanding <strong>where</strong> objects live and <strong>how</strong> they get cleaned up is critical for writing efficient Java and for interviews at scale-focused companies.</p>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-purple">📦</div>Stack Memory</div>
+          <p>Stores <strong>local variables</strong> and <strong>method call frames</strong> (including reference variables). Fast LIFO access. Memory released automatically when method returns. Each thread has its own stack.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-green">🏗</div>Heap Memory</div>
+          <p>Stores all <strong>objects</strong> created with <span class="ic">new</span>. Shared across all threads. Managed by the Garbage Collector. Larger but slower than stack. Divided into Young Gen, Old Gen, and Metaspace (Java 8+).</p>
+        </div>
+      </div>
+
+      <pre data-lang="java"><code><span class="kw">void</span> <span class="fn">method</span>() {
+    <span class="kw">int</span> x = <span class="nu">5</span>;              <span class="cm">// x lives on STACK</span>
+    <span class="ty">Student</span> s = <span class="kw">new</span> <span class="ty">Student</span>(); <span class="cm">// reference 's' on stack, object on HEAP</span>
+}   <span class="cm">// s goes out of scope → object becomes eligible for GC</span></code></pre>
+
+      <h3>Garbage Collection — Key Facts</h3>
+      <ul>
+        <li>GC runs automatically — you <strong>cannot force it</strong> (calling <span class="ic">System.gc()</span> is only a hint).</li>
+        <li>An object is GC-eligible when <strong>no live references</strong> point to it.</li>
+        <li>GC uses algorithms like <strong>Mark-and-Sweep</strong>, <strong>Generational GC</strong> (Young → Old promotion), and <strong>G1 GC</strong> (default Java 9+).</li>
+        <li><span class="ic">finalize()</span> is called before collection — but deprecated in Java 9 and removed in Java 18. Use <span class="ic">try-with-resources</span> and <span class="ic">AutoCloseable</span> instead.</li>
+      </ul>
+
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Heap Region</th><th>Holds</th><th>GC Type</th></tr>
+          <tr><td>Young Generation (Eden + Survivor)</td><td>Newly created objects</td><td>Minor GC (fast)</td></tr>
+          <tr><td>Old Generation (Tenured)</td><td>Long-lived objects promoted from Young</td><td>Major/Full GC (slow — causes pauses)</td></tr>
+          <tr><td>Metaspace (Java 8+)</td><td>Class metadata, static variables</td><td>Cleaned when class is unloaded</td></tr>
+          <tr><td>String Pool (in Heap)</td><td>Interned String literals</td><td>Subject to GC if unreachable</td></tr>
+        </table>
+      </div>
+
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Memory Leak in Java:</strong> Can happen when objects are kept alive unintentionally — e.g., static collections holding references, unclosed streams, listeners not deregistered. GC cannot collect objects that still have reachable references even if logically "done".</div>
+      </div>
+    </div>
+
+    <!-- ─── 20. STRING ─── -->
+    <div class="section" id="string-oop">
+      <div class="section-header">
+        <span class="section-num">20</span>
+        <h2 class="section-title">String, Immutability &amp; String Pool</h2>
+      </div>
+
+      <p><span class="ic">String</span> in Java is a <strong>class</strong> (not a primitive), and it is <strong>immutable</strong> — once created, its value cannot change. Every "modification" creates a new String object.</p>
+
+      <pre data-lang="java"><code><span class="cm">// String literal → goes into String Pool (heap)</span>
+<span class="ty">String</span> s1 = <span class="st">"hello"</span>;
+<span class="ty">String</span> s2 = <span class="st">"hello"</span>;         <span class="cm">// same pooled object as s1</span>
+<span class="ty">System</span>.out.<span class="fn">println</span>(s1 == s2);  <span class="cm">// true — same reference from pool</span>
+
+<span class="cm">// new keyword → always creates a NEW heap object (bypasses pool)</span>
+<span class="ty">String</span> s3 = <span class="kw">new</span> <span class="ty">String</span>(<span class="st">"hello"</span>);
+<span class="ty">System</span>.out.<span class="fn">println</span>(s1 == s3);     <span class="cm">// false — different objects</span>
+<span class="ty">System</span>.out.<span class="fn">println</span>(s1.equals(s3)); <span class="cm">// true  — same content</span>
+
+<span class="cm">// intern() — forces into pool</span>
+<span class="ty">String</span> s4 = s3.<span class="fn">intern</span>();
+<span class="ty">System</span>.out.<span class="fn">println</span>(s1 == s4);     <span class="cm">// true — now in pool</span></code></pre>
+
+      <h3>Why is String Immutable?</h3>
+      <ul>
+        <li><strong>Security</strong> — strings used in network connections, file paths, DB URLs can't be tampered with.</li>
+        <li><strong>Thread safety</strong> — immutable objects are inherently thread-safe without synchronisation.</li>
+        <li><strong>String Pool</strong> — pooling only works safely if strings can't change after being shared.</li>
+        <li><strong>HashCode caching</strong> — String caches its hashCode on first call (since value never changes).</li>
+      </ul>
+
+      <h3>String vs StringBuilder vs StringBuffer</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Class</th><th>Mutable?</th><th>Thread-Safe?</th><th>Performance</th><th>Use When</th></tr>
+          <tr><td><span class="ic">String</span></td><td>❌ No</td><td>✅ Yes (immutable)</td><td>Slow for concatenation in loops</td><td>Fixed strings, keys, literals</td></tr>
+          <tr><td><span class="ic">StringBuilder</span></td><td>✅ Yes</td><td>❌ No</td><td>Fast</td><td>Single-threaded string building</td></tr>
+          <tr><td><span class="ic">StringBuffer</span></td><td>✅ Yes</td><td>✅ Yes (synchronized)</td><td>Slower than StringBuilder</td><td>Multi-threaded string building</td></tr>
+        </table>
+      </div>
+
+      <pre data-lang="java"><code><span class="cm">// Bad — creates N intermediate String objects in loop</span>
+<span class="ty">String</span> result = <span class="st">""</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="nu">0</span>; i < <span class="nu">1000</span>; i++) result += i;  <span class="cm">// O(n²) memory!</span>
+
+<span class="cm">// Good — single mutable buffer</span>
+<span class="ty">StringBuilder</span> sb = <span class="kw">new</span> <span class="ty">StringBuilder</span>();
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="nu">0</span>; i < <span class="nu">1000</span>; i++) sb.<span class="fn">append</span>(i);
+<span class="ty">String</span> result = sb.<span class="fn">toString</span>();</code></pre>
+    </div>
+
+    <!-- ─── 21. COMPARABLE vs COMPARATOR ─── -->
+    <div class="section" id="comparable">
+      <div class="section-header">
+        <span class="section-num">21</span>
+        <h2 class="section-title">Comparable vs Comparator</h2>
+      </div>
+
+      <p>Both are interfaces used for sorting objects. This is one of the <strong>most frequently asked</strong> Java OOP questions in FAANG interviews.</p>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-purple">①</div>Comparable — Natural Ordering</div>
+          <p>Interface: <span class="ic">java.lang.Comparable&lt;T&gt;</span><br>Method: <span class="ic">int compareTo(T o)</span><br>Implemented <strong>inside the class</strong> being sorted. Defines the default/natural order.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-red">②</div>Comparator — Custom Ordering</div>
+          <p>Interface: <span class="ic">java.util.Comparator&lt;T&gt;</span><br>Method: <span class="ic">int compare(T o1, T o2)</span><br>Implemented <strong>outside the class</strong>. Defines alternate orderings without modifying the class.</p>
+        </div>
+      </div>
+
+      <pre data-lang="java"><code><span class="cm">// ── Comparable — "I know how to compare myself" ──</span>
+<span class="kw">class</span> <span class="ty">Student</span> <span class="kw">implements</span> <span class="ty">Comparable</span>&lt;<span class="ty">Student</span>&gt; {
+    <span class="ty">String</span> name; <span class="kw">int</span> marks;
+
+    <span class="an">@Override</span>
+    <span class="kw">public int</span> <span class="fn">compareTo</span>(<span class="ty">Student</span> other) {
+        <span class="kw">return this</span>.marks - other.marks;  <span class="cm">// ascending by marks</span>
+        <span class="cm">// return 0  → equal</span>
+        <span class="cm">// return &lt;0 → this comes before other</span>
+        <span class="cm">// return &gt;0 → this comes after other</span>
+    }
+}
+
+<span class="ty">List</span>&lt;<span class="ty">Student</span>&gt; list = <span class="kw">new</span> <span class="ty">ArrayList</span>&lt;&gt;();
+<span class="ty">Collections</span>.<span class="fn">sort</span>(list);            <span class="cm">// uses compareTo</span>
+
+
+<span class="cm">// ── Comparator — "An external judge decides order" ──</span>
+<span class="ty">Comparator</span>&lt;<span class="ty">Student</span>&gt; byName = (s1, s2) -&gt; s1.name.<span class="fn">compareTo</span>(s2.name);
+<span class="ty">Comparator</span>&lt;<span class="ty">Student</span>&gt; byMarksDesc = (s1, s2) -&gt; s2.marks - s1.marks;
+
+list.<span class="fn">sort</span>(byName);
+list.<span class="fn">sort</span>(<span class="ty">Comparator</span>.<span class="fn">comparing</span>(s -&gt; s.name));        <span class="cm">// cleaner</span>
+list.<span class="fn">sort</span>(<span class="ty">Comparator</span>.<span class="fn">comparingInt</span>((s) -&gt; s.marks)
+         .<span class="fn">reversed</span>()
+         .<span class="fn">thenComparing</span>(s -&gt; s.name));               <span class="cm">// chain multiple</span></code></pre>
+
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Aspect</th><th>Comparable</th><th>Comparator</th></tr>
+          <tr><td>Package</td><td><span class="ic">java.lang</span></td><td><span class="ic">java.util</span></td></tr>
+          <tr><td>Method</td><td><span class="ic">compareTo(T o)</span></td><td><span class="ic">compare(T o1, T o2)</span></td></tr>
+          <tr><td>Where defined</td><td>Inside the class itself</td><td>Outside (separate class or lambda)</td></tr>
+          <tr><td>Orderings</td><td>One (natural)</td><td>Many (multiple strategies)</td></tr>
+          <tr><td>Modifying class needed?</td><td>Yes</td><td>No</td></tr>
+          <tr><td>Used by</td><td><span class="ic">Collections.sort(list)</span>, <span class="ic">TreeSet</span></td><td><span class="ic">list.sort(comp)</span>, <span class="ic">TreeSet(comp)</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── 22. FUNCTIONAL INTERFACES & LAMBDA ─── -->
+    <div class="section" id="functional">
+      <div class="section-header">
+        <span class="section-num">22</span>
+        <h2 class="section-title">Functional Interfaces &amp; Lambdas</h2>
+      </div>
+
+      <p>Java 8 blended OOP with functional programming. A <strong>Functional Interface</strong> has exactly <strong>one abstract method</strong>. Lambdas are anonymous implementations of functional interfaces — they make the code dramatically shorter.</p>
+
+      <pre data-lang="java"><code><span class="an">@FunctionalInterface</span>
+<span class="kw">interface</span> <span class="ty">Greeting</span> {
+    <span class="kw">void</span> <span class="fn">greet</span>(<span class="ty">String</span> name);    <span class="cm">// exactly one abstract method</span>
+    <span class="cm">// can still have default/static methods</span>
+}
+
+<span class="cm">// Old way — anonymous inner class</span>
+<span class="ty">Greeting</span> g1 = <span class="kw">new</span> <span class="ty">Greeting</span>() {
+    <span class="kw">public void</span> <span class="fn">greet</span>(<span class="ty">String</span> name) { <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Hello "</span> + name); }
+};
+
+<span class="cm">// Java 8 Lambda — clean, concise</span>
+<span class="ty">Greeting</span> g2 = name -&gt; <span class="ty">System</span>.out.<span class="fn">println</span>(<span class="st">"Hello "</span> + name);
+g2.<span class="fn">greet</span>(<span class="st">"Gauri"</span>);</code></pre>
+
+      <h3>Built-in Functional Interfaces (<span class="ic">java.util.function</span>)</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Interface</th><th>Method</th><th>Takes</th><th>Returns</th><th>Use</th></tr>
+          <tr><td><span class="ic">Predicate&lt;T&gt;</span></td><td><span class="ic">test(T t)</span></td><td>T</td><td>boolean</td><td>Filtering — <span class="ic">list.stream().filter(p)</span></td></tr>
+          <tr><td><span class="ic">Function&lt;T,R&gt;</span></td><td><span class="ic">apply(T t)</span></td><td>T</td><td>R</td><td>Transforming — <span class="ic">map(f)</span></td></tr>
+          <tr><td><span class="ic">Consumer&lt;T&gt;</span></td><td><span class="ic">accept(T t)</span></td><td>T</td><td>void</td><td>Side effects — <span class="ic">forEach(c)</span></td></tr>
+          <tr><td><span class="ic">Supplier&lt;T&gt;</span></td><td><span class="ic">get()</span></td><td>—</td><td>T</td><td>Lazy creation / factory</td></tr>
+          <tr><td><span class="ic">BiFunction&lt;T,U,R&gt;</span></td><td><span class="ic">apply(T t, U u)</span></td><td>T, U</td><td>R</td><td>Two-arg transform</td></tr>
+          <tr><td><span class="ic">UnaryOperator&lt;T&gt;</span></td><td><span class="ic">apply(T t)</span></td><td>T</td><td>T</td><td>Same-type transform</td></tr>
+          <tr><td><span class="ic">Runnable</span></td><td><span class="ic">run()</span></td><td>—</td><td>void</td><td>Thread tasks</td></tr>
+        </table>
+      </div>
+
+      <pre data-lang="java"><code><span class="ty">List</span>&lt;<span class="ty">String</span>&gt; names = <span class="ty">List</span>.<span class="fn">of</span>(<span class="st">"Alice"</span>, <span class="st">"Bob"</span>, <span class="st">"Charlie"</span>);
+
+<span class="cm">// Predicate — keep names longer than 3 chars</span>
+<span class="ty">Predicate</span>&lt;<span class="ty">String</span>&gt; longName = s -&gt; s.<span class="fn">length</span>() > <span class="nu">3</span>;
+
+<span class="cm">// Function — transform to uppercase</span>
+<span class="ty">Function</span>&lt;<span class="ty">String</span>, <span class="ty">String</span>&gt; toUpper = <span class="ty">String</span>::toUpperCase;
+
+<span class="cm">// Consumer — print each</span>
+<span class="ty">Consumer</span>&lt;<span class="ty">String</span>&gt; printer = <span class="ty">System</span>.out::println;
+
+names.stream()
+     .<span class="fn">filter</span>(longName)
+     .<span class="fn">map</span>(toUpper)
+     .<span class="fn">forEach</span>(printer);
+<span class="cm">// Output: ALICE, CHARLIE</span></code></pre>
+
+      <div class="callout callout-purple">
+        <span class="callout-icon">📌</span>
+        <div><strong>Method References</strong> (<span class="ic">ClassName::method</span>) are shorthand lambdas. Types: Static (<span class="ic">Math::sqrt</span>), Instance (<span class="ic">str::toUpperCase</span>), Constructor (<span class="ic">Student::new</span>), Arbitrary instance (<span class="ic">String::toUpperCase</span>).</div>
+      </div>
+    </div>
+
+    <!-- ─── 23. RECORDS & SEALED ─── -->
+    <div class="section" id="records-sealed">
+      <div class="section-header">
+        <span class="section-num">23</span>
+        <h2 class="section-title">Records &amp; Sealed Classes (Modern Java)</h2>
+      </div>
+
+      <h3>Records (Java 16+ — stable)</h3>
+      <p>Records are immutable data carrier classes. The compiler auto-generates: constructor, getters (by field name, no "get" prefix), <span class="ic">equals()</span>, <span class="ic">hashCode()</span>, and <span class="ic">toString()</span>.</p>
+
+      <pre data-lang="java"><code><span class="cm">// Traditional data class — lots of boilerplate</span>
+<span class="kw">class</span> <span class="ty">Point</span> {
+    <span class="kw">private final int</span> x, y;
+    <span class="ty">Point</span>(<span class="kw">int</span> x, <span class="kw">int</span> y) { <span class="kw">this</span>.x = x; <span class="kw">this</span>.y = y; }
+    <span class="kw">public int</span> <span class="fn">x</span>() { <span class="kw">return</span> x; }
+    <span class="kw">public int</span> <span class="fn">y</span>() { <span class="kw">return</span> y; }
+    <span class="cm">// + equals, hashCode, toString...</span>
+}
+
+<span class="cm">// Record — everything above in one line!</span>
+<span class="kw">record</span> <span class="ty">Point</span>(<span class="kw">int</span> x, <span class="kw">int</span> y) { }
+
+<span class="ty">Point</span> p = <span class="kw">new</span> <span class="ty">Point</span>(<span class="nu">3</span>, <span class="nu">4</span>);
+p.<span class="fn">x</span>();          <span class="cm">// 3</span>
+p.<span class="fn">y</span>();          <span class="cm">// 4</span>
+<span class="ty">System</span>.out.<span class="fn">println</span>(p);   <span class="cm">// Point[x=3, y=4]</span>
+
+<span class="cm">// Records can have compact constructors for validation</span>
+<span class="kw">record</span> <span class="ty">Range</span>(<span class="kw">int</span> min, <span class="kw">int</span> max) {
+    <span class="ty">Range</span> {   <span class="cm">// compact constructor</span>
+        <span class="kw">if</span> (min > max) <span class="kw">throw new</span> <span class="ty">IllegalArgumentException</span>();
+    }
+}</code></pre>
+
+      <div class="callout callout-info">
+        <span class="callout-icon">💡</span>
+        <div>Records are <strong>implicitly final</strong> (cannot be extended). Fields are <span class="ic">private final</span>. Records can implement interfaces. They cannot extend classes (already extend <span class="ic">java.lang.Record</span>).</div>
+      </div>
+
+      <h3>Sealed Classes (Java 17+ — stable)</h3>
+      <p>Sealed classes restrict which classes can extend them. This gives <strong>exhaustive type hierarchies</strong> — the compiler knows all possible subtypes.</p>
+
+      <pre data-lang="java"><code><span class="cm">// Only Circle, Rectangle, Triangle can extend Shape</span>
+<span class="kw">public sealed class</span> <span class="ty">Shape</span>
+    <span class="kw">permits</span> <span class="ty">Circle</span>, <span class="ty">Rectangle</span>, <span class="ty">Triangle</span> { }
+
+<span class="cm">// Permitted subclasses must be: final, sealed, or non-sealed</span>
+<span class="kw">public final class</span>    <span class="ty">Circle</span>    <span class="kw">extends</span> <span class="ty">Shape</span> { <span class="kw">double</span> radius; }
+<span class="kw">public sealed class</span>   <span class="ty">Rectangle</span> <span class="kw">extends</span> <span class="ty">Shape</span> <span class="kw">permits</span> <span class="ty">Square</span> { }
+<span class="kw">public non-sealed class</span> <span class="ty">Triangle</span> <span class="kw">extends</span> <span class="ty">Shape</span> { }  <span class="cm">// open to anyone</span>
+
+<span class="cm">// Java 21 pattern matching switch — exhaustive, no default needed!</span>
+<span class="kw">double</span> area = <span class="kw">switch</span> (shape) {
+    <span class="kw">case</span> <span class="ty">Circle</span>    c -&gt; <span class="ty">Math</span>.PI * c.radius * c.radius;
+    <span class="kw">case</span> <span class="ty">Rectangle</span> r -&gt; r.width * r.height;
+    <span class="kw">case</span> <span class="ty">Triangle</span>  t -&gt; <span class="cm">/* ... */</span> <span class="nu">0</span>;
+};</code></pre>
+
+      <div class="itip">
+        <div class="itip-label">🎯 Interview Tip</div>
+        <p>Sealed classes + pattern matching switch together replace the classic "visitor pattern" boilerplate. This is a favourite "modern Java OOP" question at senior SDE interviews. Knowing Java 14–21 features signals seriousness.</p>
+      </div>
+    </div>
+
+    <!-- ─── 24. INTERVIEW Q&A ─── -->
+    <div class="section" id="interview">
+      <div class="section-header">
+        <span class="section-num">24</span>
+        <h2 class="section-title">🎯 FAANG Interview Q&amp;A</h2>
+      </div>
+
+      <div class="itip">
+        <div class="itip-label">🏆 Top Must-Know Questions</div>
+        <p>These are the highest-frequency OOPs questions asked at Google, Amazon, Meta, Apple, Microsoft, Flipkart, and other top product companies.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-purple">Q</div>What are the 4 pillars of OOP?</div>
+        <p><strong>Encapsulation</strong> (hide data via access modifiers + getters/setters) → <strong>Abstraction</strong> (expose only what's needed via abstract/interfaces) → <strong>Inheritance</strong> (reuse via extends/implements) → <strong>Polymorphism</strong> (one interface, many forms — overloading + overriding).</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-red">Q</div>Why does Java not support multiple class inheritance?</div>
+        <p>The <strong>Diamond Problem</strong> — if two parent classes have the same method, the JVM can't decide which to call. Java solves this with <strong>interfaces</strong> (which have explicit conflict resolution rules).</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-green">Q</div>Can we override static methods? Can we overload them?</div>
+        <p>Static methods <strong>cannot be overridden</strong> (they're resolved at compile time — method hiding, not polymorphism). They <strong>can be overloaded</strong> (different parameters in same class).</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-yellow">Q</div>What is the difference between method hiding and method overriding?</div>
+        <p><strong>Overriding:</strong> Non-static method in subclass with same signature — resolved at <em>runtime</em> (dynamic dispatch). <strong>Hiding:</strong> Static method in subclass with same signature — resolved at <em>compile time</em> based on reference type, not object type.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-purple">Q</div>Can abstract class have constructor?</div>
+        <p>Yes! Abstract classes can (and should) have constructors, used for subclass chaining via <span class="ic">super()</span>. But you cannot instantiate an abstract class directly with <span class="ic">new</span>.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-red">Q</div>Can interface have constructors?</div>
+        <p>No. Interfaces cannot have constructors because they cannot be instantiated.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-green">Q</div>What is the difference between == and .equals()?</div>
+        <p><span class="ic">==</span> checks reference equality (same memory address). <span class="ic">.equals()</span> checks logical/value equality (overridden in String, Integer, etc.). For primitive comparisons, use <span class="ic">==</span> always.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-yellow">Q</div>What is Covariant Return Type?</div>
+        <p>An overriding method in a subclass can return a <em>subtype</em> of the parent method's return type. E.g., parent returns <span class="ic">Animal</span>, child can return <span class="ic">Dog</span> (if Dog extends Animal).</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-purple">Q</div>What is the difference between early and late binding?</div>
+        <p><strong>Early (static) binding:</strong> Method resolved at compile time — overloaded methods, final/private/static methods. <strong>Late (dynamic) binding:</strong> Method resolved at runtime — overridden instance methods via dynamic dispatch.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-red">Q</div>Is Java pass-by-value or pass-by-reference?</div>
+        <p>Java is <strong>always pass-by-value</strong>. For primitives, the value is copied. For objects, the <em>reference value</em> (address) is copied — the method gets its own copy of the reference, so reassigning it doesn't affect the caller, but mutating the object through it does.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-green">Q</div>When to use abstract class vs interface?</div>
+        <p>Use <strong>abstract class</strong> when related classes share code/state (IS-A with shared implementation). Use <strong>interface</strong> when unrelated classes need to implement a capability (CAN-DO/HAS-A capability). From Java 8, interfaces can have default methods, blurring lines — but the principle remains.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-yellow">Q</div>What happens if two interfaces have the same default method and a class implements both?</div>
+        <p><strong>Compile error</strong> — the class must override the method to resolve the ambiguity. The compiler cannot pick between the two default implementations.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-purple">Q</div>Can we make an enum implement an interface?</div>
+        <p>Yes! Enum can implement interfaces. But enum cannot extend any class (it already implicitly extends <span class="ic">java.lang.Enum</span>). Enum cannot be a superclass.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-red">Q</div>What is dynamic method dispatch?</div>
+        <p>The mechanism by which an overridden method call is resolved at runtime based on the <strong>actual type of the object</strong> (not the reference type). It's the foundation of runtime polymorphism. The JVM uses the vtable to achieve this.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-green">Q</div>Explain the Singleton pattern and its thread-safety issues.</div>
+        <p>Basic (lazy) singleton is not thread-safe — two threads may simultaneously see <span class="ic">instance == null</span> and create two objects. Fix with <strong>double-checked locking</strong> (<span class="ic">volatile</span> + <span class="ic">synchronized</span>) or use <strong>Enum singleton</strong> (inherently thread-safe and serialization-safe).</p>
+
+        <pre data-lang="java" style="margin-top:12px;"><code><span class="cm">// Best — Enum singleton (Josh Bloch, Effective Java)</span>
+<span class="kw">enum</span> <span class="ty">DatabaseConnection</span> {
+    INSTANCE;
+    <span class="kw">public void</span> <span class="fn">connect</span>() { <span class="cm">/* ... */</span> }
+}</code></pre>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-purple">Q</div>What is the contract between equals() and hashCode()?</div>
+        <p>If <span class="ic">a.equals(b)</span> is true, then <span class="ic">a.hashCode() == b.hashCode()</span> must be true. The reverse is NOT required (hash collision is OK). Breaking this contract causes bugs in <span class="ic">HashMap</span>, <span class="ic">HashSet</span> etc. — objects that are logically equal won't be found after insertion.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-red">Q</div>What is the difference between String, StringBuilder, StringBuffer?</div>
+        <p>String is <strong>immutable</strong> and thread-safe (by immutability). StringBuilder is <strong>mutable + not thread-safe</strong> (fastest for single-thread string building). StringBuffer is <strong>mutable + thread-safe</strong> (synchronized methods, slower). In loops always use StringBuilder.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-green">Q</div>Why is String stored in a pool? What is String interning?</div>
+        <p>String literals are stored in the <strong>String Pool</strong> (part of heap, Metaspace before Java 7) to save memory — identical literals share one object. <span class="ic">intern()</span> forces a heap String object into the pool so reference equality (<span class="ic">==</span>) works with pool strings. Always use <span class="ic">.equals()</span> for String comparison in production code.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-yellow">Q</div>What is the difference between upcasting and downcasting?</div>
+        <p><strong>Upcasting</strong> (Subclass → Superclass ref): always implicit and safe. Access limited to superclass API. <strong>Downcasting</strong> (Superclass ref → Subclass): explicit cast required, unsafe — throws <span class="ic">ClassCastException</span> at runtime if actual object isn't that type. Always guard with <span class="ic">instanceof</span> (or pattern matching <span class="ic">instanceof</span> in Java 16+).</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-purple">Q</div>What is a Functional Interface? Can it have multiple methods?</div>
+        <p>A Functional Interface has <strong>exactly one abstract method</strong>. It can also have any number of <span class="ic">default</span> and <span class="ic">static</span> methods — those don't count. Annotate with <span class="ic">@FunctionalInterface</span> (optional but recommended — compiler enforces the rule). Lambdas are syntactic sugar for implementing functional interfaces.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-red">Q</div>Comparable vs Comparator — when to use which?</div>
+        <p>Use <strong>Comparable</strong> when there is one natural/default ordering for the class (e.g., Student by marks) and you can modify the class. Use <strong>Comparator</strong> when you need multiple orderings, or cannot modify the class (third-party), or want the ordering logic decoupled. Comparator can be passed as a lambda from Java 8 onwards.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-green">Q</div>Where do objects live? What is Stack vs Heap?</div>
+        <p><strong>Stack</strong>: local variables, method frames, reference variables (fast, LIFO, thread-private). <strong>Heap</strong>: all objects created with <span class="ic">new</span> (managed by GC, shared across threads). A reference variable on the stack points to an object on the heap. When a method returns, its stack frame is popped — if no other references point to the heap object, it becomes GC eligible.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-yellow">Q</div>Can we prevent garbage collection of an object?</div>
+        <p>Keep at least one strong reference to the object alive. Java also has <span class="ic">SoftReference</span>, <span class="ic">WeakReference</span>, and <span class="ic">PhantomReference</span> (<span class="ic">java.lang.ref</span>) for caches that GC can reclaim under memory pressure. You cannot truly "prevent" GC — you can only ensure an object is reachable.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-purple">Q</div>What are Records and when would you use them?</div>
+        <p>Records (Java 16+) are immutable data carrier classes where the compiler auto-generates the canonical constructor, accessors (by field name), <span class="ic">equals()</span>, <span class="ic">hashCode()</span>, and <span class="ic">toString()</span>. Use them for DTOs, value objects, response/request models — anywhere you just need to hold data without behaviour. They cannot extend classes and are implicitly final.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-red">Q</div>What problem do Sealed Classes solve?</div>
+        <p>They restrict which classes can extend a class/interface, giving the compiler knowledge of the <strong>complete closed type hierarchy</strong>. This enables <strong>exhaustive pattern matching</strong> in switch expressions without a default branch. They replace ad-hoc approaches like package-private constructors or documentation-only restrictions.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-green">Q</div>What is shallow copy vs deep copy?</div>
+        <p><strong>Shallow copy</strong>: copies primitive fields by value, but reference fields by reference — both original and copy share the same nested objects. <strong>Deep copy</strong>: recursively copies all nested objects too — completely independent duplicate. Default <span class="ic">clone()</span> is shallow. Implement deep copy manually via overridden <span class="ic">clone()</span>, copy constructors, or serialization.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon icon-yellow">Q</div>What is the role of the Object class?</div>
+        <p>Every class in Java implicitly extends <span class="ic">java.lang.Object</span>. It provides: <span class="ic">equals()</span>, <span class="ic">hashCode()</span>, <span class="ic">toString()</span>, <span class="ic">clone()</span>, <span class="ic">getClass()</span>, <span class="ic">finalize()</span>, <span class="ic">wait()</span>, <span class="ic">notify()</span>, <span class="ic">notifyAll()</span>. FAANG frequently asks you to override <span class="ic">equals()</span> + <span class="ic">hashCode()</span> correctly.</p>
+      </div>
+
+    </div>
+
+    <!-- ─── QUICK CHEAT SHEET ─── -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">⚡</span>
+        <h2 class="section-title">Quick Cheat Sheet</h2>
+      </div>
+
+      <pre data-lang="java"><code><span class="cm">// ═══ KEY RULES TO MEMORISE ════════════════════════════════════════════════
+
+// Inheritance
+extends     → class-to-class (single)
+implements  → class-to-interface (multiple allowed)
+extends     → interface-to-interface (multiple allowed)
+
+// Overriding rules
+✅ Same name, same params, same/covariant return
+✅ Access modifier: same or WIDER (not narrower)
+✅ Can throw fewer/narrower checked exceptions
+❌ Cannot override private, static, final methods
+
+// Static
+static method   → cannot use this/super, cannot access instance vars
+static variable → one copy for all objects (class-level memory)
+static block    → runs once at class load time
+Only nested classes can be static
+
+// final
+final variable  → primitives: value frozen | references: re-assign blocked, object mutable
+final method    → cannot override (early binding)
+final class     → cannot extend (all methods implicitly final)
+
+// Constructors
+✅ No return type  ✅ Name == class name  ✅ Can be overloaded
+✅ this() → same class, super() → parent class  ✅ Both must be 1st statement
+❌ Not inherited  ❌ Not overridden
+
+// Interface defaults (Java 8+)
+Class impl  >  Child interface default  >  Parent interface default
+Two same defaults → COMPILE ERROR unless class overrides
+
+// Access: strictest to widest
+private → default (pkg-private) → protected → public
+
+// Polymorphism does NOT apply to instance variables (compile-time resolved)
+// Polymorphism DOES apply to instance methods (runtime resolved)
+
+// String
+String   → immutable, thread-safe, String Pool for literals
+StringBuilder → mutable, NOT thread-safe, fastest for concatenation
+StringBuffer  → mutable, thread-safe (synchronized), slower
+
+// Comparable vs Comparator
+Comparable  → inside class, compareTo(), one natural order
+Comparator  → outside class, compare(), multiple orderings, lambda-friendly
+
+// equals() + hashCode() contract
+equals()==true → hashCode() MUST be equal (reverse not required)
+Always override both together
+
+// Casting
+Upcasting   → implicit, safe (Subclass → Superclass)
+Downcasting → explicit, risky, guard with instanceof
+instanceof Dog dog → Java 16+ pattern matching (no extra cast needed)
+
+// Functional Interface
+Exactly ONE abstract method; can have default/static methods
+Predicate→boolean  Function→transform  Consumer→void  Supplier→produce
+
+// Records (Java 16+)
+record Point(int x, int y) {} → auto-generates constructor, getters, equals, hashCode, toString
+Immutable, implicitly final, cannot extend classes
+
+// Sealed Classes (Java 17+)
+sealed class Shape permits Circle, Rectangle { }
+Enables exhaustive pattern matching switch — no default needed
+</span></code></pre>
+
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+// Highlight active nav item on scroll
+const sections = document.querySelectorAll('.section[id]');
+const navItems = document.querySelectorAll('.nav-item');
+
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('active'));
+      const a = document.querySelector(`.nav-item[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+
+sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
