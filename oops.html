@@ -2,8 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Java OOPs — FAANG Master Notes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="description" content="Master Java Object-Oriented Programming with this comprehensive FAANG interview preparation guide. Learn Classes, Inheritance, Polymorphism, Abstraction, Encapsulation, and more.">
+<meta name="keywords" content="Java OOP, Object-Oriented Programming, FAANG Interview, Java Guide, Inheritance, Polymorphism, Abstraction">
+<meta name="author" content="FAANG Prep">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0a0a0f">
+<title>Java OOPs — FAANG Master Notes | Complete OOP Guide</title>
+<link rel="canonical" href="https://yoursite.com/oops.html">
+<meta property="og:title" content="Java OOPs — FAANG Master Notes">
+<meta property="og:description" content="Comprehensive Java OOP reference guide for FAANG interview preparation">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -143,7 +153,9 @@
     border: 1px solid rgba(255,255,255,0.2);
     color: #fff;
     border-radius: 999px;
-    padding: 10px 16px;
+    padding: 12px 18px;
+    min-height: 48px;
+    min-width: 48px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     font-weight: 700;
@@ -151,6 +163,16 @@
     text-transform: uppercase;
     cursor: pointer;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .mobile-index-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
   }
 
   .mobile-index-backdrop {
@@ -158,7 +180,27 @@
     position: fixed;
     inset: 0;
     z-index: 240;
-    background: transparent;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .mobile-index-backdrop[hidden] {
+    display: none !important;
+    animation: fadeOut 0.3s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
   }
 
   .mobile-index-panel {
@@ -169,12 +211,17 @@
     z-index: 250;
     max-height: 72vh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     background: rgba(17, 17, 24, 0.98);
     border-top: 1px solid var(--border);
     border-radius: 16px 16px 0 0;
     padding: 18px 0 24px;
-    transform: translateY(105%);
-    transition: transform 0.24s ease;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
   .mobile-index-panel.open { transform: translateY(0); }
@@ -588,8 +635,88 @@
     .hero, .content { padding: 40px 24px; }
     .mobile-index-btn,
     .mobile-index-backdrop { display: block; }
+    .hero h1 { font-size: clamp(28px, 6vw, 42px); }
+    .section-title { font-size: 22px; }
+  }
+
+  @media (max-width: 600px) {
+    .hero, .content { padding: 32px 16px; }
+    .grid2, .grid3 { gap: 12px; }
+    .card { padding: 18px 20px; }
+    pre { padding: 14px 16px; font-size: 12px; }
+    .hero h1 { font-size: clamp(24px, 5vw, 36px); }
+    .section-title { font-size: 18px; }
+    .mobile-index-btn { right: 12px; bottom: 16px; padding: 10px 14px; font-size: 11px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  @media (orientation: landscape) and (max-height: 600px) {
+    .mobile-index-panel { max-height: 85vh; }
   }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Java OOPs — FAANG Master Notes",
+  "description": "Comprehensive Java Object-Oriented Programming guide for FAANG interview preparation",
+  "image": "https://yoursite.com/oops-og.jpg",
+  "author": {
+    "@type": "Organization",
+    "name": "FAANG Prep",
+    "url": "https://yoursite.com"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "FAANG Prep"
+  },
+  "datePublished": "2024-01-01",
+  "dateModified": "2024-04-04",
+  "keywords": "Java, OOP, Object-Oriented Programming, Interview, FAANG, Inheritance, Polymorphism, Abstraction, Encapsulation"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Java OOPs",
+      "item": "https://yoursite.com"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What are the 4 pillars of OOP?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Encapsulation, Abstraction, Inheritance, and Polymorphism"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between Comparable and Comparator?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Comparable defines natural ordering inside a class; Comparator defines custom ordering outside a class"
+      }
+    }
+  ]
+}
+</script>
+
 </head>
 <body>
 
@@ -648,11 +775,11 @@
 <div class="main">
 
   <!-- HERO -->
-  <div class="hero">
-    <div class="hero-badge">Java OOPs · FAANG &amp; MAANG Level</div>
+  <div class="hero" role="banner">
+    <div class="hero-badge" aria-label="Java and FAANG level content">Java OOPs · FAANG &amp; MAANG Level</div>
     <h1>Master <span>Object-Oriented</span><br>Programming in Java</h1>
     <p>The definitive one-stop revision sheet — every OOP concept explained, coded, and interview-ready. Built for cracking top product companies.</p>
-    <div class="hero-tags">
+    <div class="hero-tags" role="group" aria-label="Featured topics">
       <span class="tag tag-purple">Classes &amp; Objects</span>
       <span class="tag tag-red">Inheritance</span>
       <span class="tag tag-green">Polymorphism</span>
@@ -2102,24 +2229,60 @@ if (mobileLinksWrap) {
   mobileLinksWrap.innerHTML = document.querySelector('.sidebar').innerHTML;
 }
 
+let touchStartY = 0;
+
 const setMobileIndexOpen = (isOpen) => {
   if (!mobilePanel || !mobileBackdrop) return;
   mobilePanel.classList.toggle('open', isOpen);
   mobilePanel.setAttribute('aria-hidden', String(!isOpen));
-  mobileBackdrop.hidden = !isOpen;
+  if (mobileBackdrop) {
+    mobileBackdrop.hidden = !isOpen;
+  }
   document.body.style.overflow = isOpen ? 'hidden' : '';
 };
 
-if (mobileOpen && mobileClose && mobileBackdrop) {
-  mobileOpen.addEventListener('click', () => setMobileIndexOpen(true));
-  mobileClose.addEventListener('click', () => setMobileIndexOpen(false));
-  mobileBackdrop.addEventListener('click', () => setMobileIndexOpen(false));
+// Simplified touch handlers
+const handlePanelTouchStart = (e) => {
+  touchStartY = e.touches[0].clientY;
+};
 
-  document.querySelectorAll('#mobileIndexLinks .nav-item').forEach(link => {
-    link.addEventListener('click', () => setMobileIndexOpen(false));
-  });
+const handlePanelTouchEnd = (e) => {
+  if (!mobilePanel || !mobilePanel.classList.contains('open')) return;
+  
+  const touchEndY = e.changedTouches[0].clientY;
+  const diff = touchStartY - touchEndY;
+  
+  // Swipe down to close
+  if (diff < -80) {
+    setMobileIndexOpen(false);
+  }
+};
+
+// Add touch handlers to panel
+if (mobilePanel) {
+  mobilePanel.addEventListener('touchstart', handlePanelTouchStart, false);
+  mobilePanel.addEventListener('touchend', handlePanelTouchEnd, false);
 }
 
+// Button click handlers
+if (mobileOpen) {
+  mobileOpen.addEventListener('click', () => setMobileIndexOpen(true));
+}
+
+if (mobileClose) {
+  mobileClose.addEventListener('click', () => setMobileIndexOpen(false));
+}
+
+if (mobileBackdrop) {
+  mobileBackdrop.addEventListener('click', () => setMobileIndexOpen(false));
+}
+
+// Nav links - close panel on click
+document.querySelectorAll('#mobileIndexLinks .nav-item').forEach(link => {
+  link.addEventListener('click', () => setMobileIndexOpen(false));
+});
+
+// Intersection observer for active nav highlighting
 const obs = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -2131,6 +2294,13 @@ const obs = new IntersectionObserver((entries) => {
 }, { rootMargin: '-30% 0px -60% 0px' });
 
 sections.forEach(s => obs.observe(s));
+
+// Prevent multi-touch zoom
+document.addEventListener('touchmove', function(e) {
+  if (e.touches.length > 1) {
+    e.preventDefault();
+  }
+}, { passive: false });
 </script>
 </body>
 </html>
